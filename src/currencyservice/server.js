@@ -48,7 +48,7 @@ if(process.env.ENABLE_TRACING == "1") {
   });
 }
 else {
-  console.log("Tracing disabled. #FLAG:THEYAREAMONGUS")
+  console.log("Tracing disabled. #FLAG:THEYAREAMONGUS good job finding this!")
 }
 
 const path = require('path');
