@@ -32,6 +32,7 @@ spec: # specification for deployment resource
                   "port": 3306,
                   "username": "datadog",
                   "password": "bitsGoodBoy"
+                  "reported_hostname": "mariadb"
                 }
               ]
             }
