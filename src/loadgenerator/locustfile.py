@@ -55,7 +55,7 @@ def checkout(l):
     i = random.randrange(1,10,1)
     if i>=7:
         l.client.post("/cart/checkout", {
-            'email': 'taylorswift@taylorswift.com',
+            'email': 'jason@sudeikis.com',
             'street_address': '1600 Amphitheatre Parkway',
             'zip_code': '94043',
             'city': 'Mountain View',
