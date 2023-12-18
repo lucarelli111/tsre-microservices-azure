@@ -7,5 +7,5 @@ import com.hipstershop.paymentservicejava.model.PaymentRecord;
 
 @Repository
 public interface PaymentRecordRepository extends CrudRepository<PaymentRecord, Long>{
-    
+
 }
