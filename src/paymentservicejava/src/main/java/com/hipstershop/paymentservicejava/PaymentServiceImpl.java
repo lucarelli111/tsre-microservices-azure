@@ -37,6 +37,9 @@ public class PaymentServiceImpl extends PaymentServiceGrpc.PaymentServiceImplBas
             int nanos = request.getAmount().getNanos();
             String ccNumber = request.getCreditCard().getCreditCardNumber();
         
+            if("0408-1516-2300-4200".equals(ccNumbers)) {
+                log.debug("Test credit card number received. Will not charge the card.");
+            }
             
             // perform payment "API call"
             try {
