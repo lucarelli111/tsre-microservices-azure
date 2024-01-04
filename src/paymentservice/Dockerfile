@@ -26,6 +26,7 @@ ENV DD_PROFILING_ENABLED=true
 ENV DD_LOGS_INJECTION=true
  
 ENV JAVA_OPTS=-javaagent:dd-java-agent.jar
+ENV CTHULHU_URL=${CTULHU_URL}
 
 WORKDIR /app
 ENTRYPOINT ["java","-jar","/app/paymentservice.jar"]

