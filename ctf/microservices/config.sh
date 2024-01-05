@@ -30,7 +30,7 @@ git clone https://github.com/kepicorp/microservices-demo-multiarch.git
 cd microservices-demo-multiarch
 
 # Add docker login
-cp -rf ./dash/microservices/.docker ~/
+cp -rf ./ctf/microservices/.docker ~/
 
 # Add DD_RUM_ID to the footer for RUM usage
 sed -e "s/RUM_APP_ID/$RUM_APP_ID/" ./src/frontend/templates/footer-template.html | sed -e "s/RUM_CLIENT_TOKEN/$RUM_CLIENT_TOKEN/" > ./src/frontend/templates/footer.html
@@ -41,7 +41,7 @@ helm repo add stable https://charts.helm.sh/stable
 helm repo update
 
 ## Change motd 
-sudo ./dash/microservices/conf_motd.sh
+sudo ./ctf/microservices/conf_motd.sh
 
 # Forward port 8080 to local machine
 #IP_ADDR=$(ip addr show enX0 | grep "inet " | awk -F'[:{ /}]+' '{ print $3 }')

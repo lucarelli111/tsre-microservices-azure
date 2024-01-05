@@ -180,9 +180,9 @@ If you would like to contribute features or fixes to this app, see the [Developm
 ---
 -->
 
-# DASH 2023 - DPN - Fun time with Swagstore
+# TSKO 2024 - DPN - Fun time with Swagstore
 
-Welcome to Dash 2023 - Datadog Partner Network Challenge !!
+Welcome to TSKO 2024 - Datadog Partner Network Challenge !!
 Your goal will be to capture all the flags related to a micro-service architected application called **Swagstore** using Datadog.
 
 The app consists of an 12-tier microservices application. The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them.
@@ -192,7 +192,7 @@ It is a fictitious e-commerce swag store, don't expect to receive swags :grinnin
 
 | Home Page                                                                                                         | Checkout Screen                                                                                                    |
 | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| [![Screenshot of store homepage](./dash/static/online-boutique-frontend-1.png)](./dash/static/online-boutique-frontend-1.png) | [![Screenshot of checkout screen](./dash/static/online-boutique-frontend-2.png)](./dash/static/online-boutique-frontend-2.png) |
+| [![Screenshot of store homepage](./ctf/static/online-boutique-frontend-1.png)](./ctf/static/online-boutique-frontend-1.png) | [![Screenshot of checkout screen](./ctf/static/online-boutique-frontend-2.png)](./ctf/static/online-boutique-frontend-2.png) |
 
 
 ## Architecture
@@ -200,7 +200,7 @@ It is a fictitious e-commerce swag store, don't expect to receive swags :grinnin
 The application is running on a single node kubernetes cluster using minikube
 
 [![Architecture of
-microservices](./dash/static/arch.png)](./dash/static/arch.png)
+microservices](./ctf/static/arch.png)](./ctf/static/arch.png)
 
 
 | Service                                              | Language      | Description                                                                                                                       |
@@ -221,7 +221,7 @@ microservices](./dash/static/arch.png)](./dash/static/arch.png)
 
 ## How to ?
 
-The datadog cluster agent configuration is in `dash/datadog-values.yaml`.
+The datadog cluster agent configuration is in `ctf/datadog-values.yaml`.
 All configuration `yaml` file for each services are in `kubernetes-manifests` directory.
 
 The only script you should need is `update.sh` to reload all configurations.
