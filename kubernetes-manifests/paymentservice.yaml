@@ -79,6 +79,8 @@ spec:
           value: "true"
         - name: DD_RUNTIME_METRICS_ENABLED
           value: "true"
+        - name: CTHULHU_URL
+          value: "cthulhu"
         # readinessProbe:
         #   exec:
         #     command: ["/bin/grpc_health_probe", "-addr=:50051"]

