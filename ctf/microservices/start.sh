@@ -3,7 +3,7 @@
 echo "Starting..."
 ## Start Minikube
 echo "> Creation of Minikube"
-minikube start --cpus=6 --memory 16384 
+minikube start --cpus=6 --memory 16384 --mount --mount-string="/proc:/host/proc"
 kubectl create secret generic datadog-secret --from-literal=api-key=$DD_API_KEY --from-literal=app-key=$DD_APP_KEY
 ## Reconfigure agent
 echo "> Setting up of datadog-agent"
