@@ -16,7 +16,12 @@
 
 # FROM base as builder
 
-FROM --platform=$BUILDPLATFORM node:19.3.0-alpine as base
+#FROM --platform=$BUILDPLATFORM node:19.3.0-alpine as base
+#FROM --platform=linux/amd64 node:19.3.0-alpine as base
+FROM --platform=$TARGETPLATFORM node:19.3.0-alpine as base
+RUN echo "BUILDPLATFORM = ${BUILDPLATFORM}"
+RUN echo "TARGETPLATFORM = ${TARGETPLATFORM}"
+
 
 FROM --platform=$BUILDPLATFORM base as builder
 

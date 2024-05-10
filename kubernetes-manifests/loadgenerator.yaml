@@ -16,7 +16,7 @@ kind: Deployment
 metadata:
   name: loadgenerator
   labels:
-      tags.datadoghq.com/env: "tsko2024"
+      tags.datadoghq.com/env: "infosys-test-1"
       tags.datadoghq.com/service: "loadgenerator"
       tags.datadoghq.com/version: "1.0"
 spec:
@@ -45,6 +45,7 @@ spec:
         - -exc
         - |
           echo "Init container pinging frontend: ${FRONTEND_ADDR}..."
+          sleep 30
           STATUSCODE=$(wget --server-response http://${FRONTEND_ADDR} 2>&1 | awk '/^  HTTP/{print $2}')
           if test $STATUSCODE -ne 200; then
               echo "Error: Could not reach frontend - Status code: ${STATUSCODE}"

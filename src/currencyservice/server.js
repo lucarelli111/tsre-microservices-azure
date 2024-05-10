@@ -159,10 +159,27 @@ function convert (call, callback) {
   }
 }
 
+function random_sleep() {
+  const date = Date.now();
+  milliseconds = (1000 * Math.floor(Math.random() * 10));
+  let currentDate = null;
+
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}
+
 /**
  * Endpoint for health checks
  */
 function check (call, callback) {
+
+  //
+	// DEMO Error
+	// introducing a random delay for AIOps - Faulty Deployment RCA
+	// TODO: Make this into a feature flag later
+	//
+  random_sleep();
   callback(null, { status: 'SERVING' });
 }
 

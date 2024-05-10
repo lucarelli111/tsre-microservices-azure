@@ -70,6 +70,13 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//
+	// DEMO Error 1
+	// introducing a random delay for AIOps - Faulty Deployment RCA
+	// TODO: Make this into a feature flag later
+	// 
+	time.Sleep(time.Duration(rand.Int31n(30)) * time.Second);
+
 	type productView struct {
 		Item  *pb.Product
 		Price *pb.Money
@@ -77,6 +84,7 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	ps := make([]productView, len(products))
 	for i, p := range products {
 		price, err := fe.convertCurrency(r.Context(), p.GetPriceUsd(), currentCurrency(r))
+
 		if err != nil {
 			renderHTTPError(log, r, w, errors.Wrapf(err, "failed to do currency conversion for product %s", p.GetId()), http.StatusInternalServerError)
 			return

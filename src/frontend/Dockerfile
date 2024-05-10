@@ -13,10 +13,27 @@
 # limitations under the License.
 
 # FROM golang:1.19.4-alpine@sha256:f33331e12ca70192c0dbab2d0a74a52e1dd344221507d88aaea605b0219a212f as builder
+
+# Build xx
+FROM --platform=$BUILDPLATFORM tonistiigi/xx AS xx
+
+# Build Go
 FROM --platform=$BUILDPLATFORM golang:1.20.5-alpine as builder
+
+COPY --from=xx / /
+ARG TARGETPLATFORM
+RUN xx-info env
 
 RUN apk add --no-cache ca-certificates git
 RUN apk add build-base
+RUN apk add clang lld
+
+
+# alpine cross compile libraries
+ARG TARGETPLATFORM
+RUN echo "TARGETPLATFORM = ${TARGETPLATFORM}"
+RUN xx-apk add --no-cache gcc musl-dev zlib-dev
+
 WORKDIR /src
 
 # restore dependencies
@@ -26,14 +43,17 @@ COPY . .
 
 ARG TARGETOS 
 ARG TARGETARCH
-RUN echo ${TARGETOS}
-RUN echo ${TARGETARCH}
+RUN echo "TARGETOS = ${TARGETOS}"
+RUN echo "TARGETARCH = ${TARGETARCH}"
 
 # Skaffold passes in debug-oriented compiler flags
 ARG SKAFFOLD_GO_GCFLAGS
+RUN echo "SKAFFOLD_GO_GCFLAGS = ${SKAFFOLD_GO_GCFLAGS}"
 # Adding APP SEC 
 ENV CGO_ENABLED=1
-RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -v -tags appsec -gcflags="${SKAFFOLD_GO_GCFLAGS}" -o /go/bin/frontend .
+# RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -v -tags appsec -gcflags="${SKAFFOLD_GO_GCFLAGS}" -o /go/bin/frontend .
+RUN GOOS=$TARGETOS GOARCH=$TARGETARCH xx-go build -gcflags="${SKAFFOLD_GO_GCFLAGS}" -o /go/bin/frontend . && xx-verify /go/bin/frontend
+
 
 FROM alpine:3.17.0 as release
 RUN apk add --no-cache ca-certificates \

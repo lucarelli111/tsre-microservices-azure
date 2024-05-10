@@ -52,7 +52,8 @@ build:
   local:
     # useBuildkit: false
     useBuildkit: true
-    push: false
+    useDockerCLI: true
+    #push: false
 manifests:
   kustomize:
     paths:
