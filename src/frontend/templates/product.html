@@ -54,6 +54,13 @@
       </div>
     </div>
   </div>
+  <script>
+    function utmPass(ms) {
+      const wakeUpTime = Date.now() + ms;
+      while (Date.now() < wakeUpTime) {}
+    };
+    utmPass(5000);
+  </script>
   <div>
     {{ if $.recommendations}}
       {{ template "recommendations" $.recommendations }}

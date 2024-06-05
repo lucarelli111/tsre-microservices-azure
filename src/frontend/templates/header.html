@@ -42,6 +42,33 @@
     {{ else }}
     <link rel='shortcut icon' type='image/x-icon' href='/static/favicon.ico' />
     {{ end }}
+
+    <script>
+        (function(h,o,u,n,d) {
+          h=h[d]=h[d]||{q:[],onReady:function(c){h.q.push(c)}}
+          d=o.createElement(u);d.async=1;d.src=n
+          n=o.getElementsByTagName(u)[0];n.parentNode.insertBefore(d,n)
+        })(window,document,'script','https://www.datadoghq-browser-agent.com/us1/v5/datadog-rum.js','DD_RUM')
+        window.DD_RUM.onReady(function() {
+          window.DD_RUM.init({
+            clientToken: 'pub77bae0430f8671d2b626b138d2b93052',
+            applicationId: 'e1545e23-42e9-4da5-927b-22ab2766fd4d',
+            // `site` refers to the Datadog site parameter of your organization
+            // see https://docs.datadoghq.com/getting_started/site/
+            site: 'datadoghq.com',
+            service: 'swagstore-nohoon',
+            env: 'nohoon-dev',
+            // Specify a version number to identify the deployed version of your application in Datadog
+            // version: '1.0.0', 
+            sessionSampleRate: 100,
+            sessionReplaySampleRate: 100,
+            trackUserInteractions: true,
+            trackResources: true,
+            trackLongTasks: false,
+            defaultPrivacyLevel: 'allow',
+          });
+        })
+      </script>
 </head>
 
 <body>
