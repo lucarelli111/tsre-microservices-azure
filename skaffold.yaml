@@ -50,10 +50,9 @@ build:
   tagPolicy:
     gitCommit: {}
   local:
-    # useBuildkit: false
-    useBuildkit: true
+    #useBuildkit: false
     useDockerCLI: true
-    #push: false
+    push: false
 manifests:
   kustomize:
     paths:
