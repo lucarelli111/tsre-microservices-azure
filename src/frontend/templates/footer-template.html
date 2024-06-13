@@ -50,32 +50,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
     integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous">
 </script>
-<script>
-(function(h,o,u,n,d) {
-    h=h[d]=h[d]||{q:[],onReady:function(c){h.q.push(c)}}
-    d=o.createElement(u);d.async=1;d.src=n
-    n=o.getElementsByTagName(u)[0];n.parentNode.insertBefore(d,n)
-})(window,document,'script','https://www.datadoghq-browser-agent.com/us1/v4/datadog-rum.js','DD_RUM')
-window.DD_RUM.onReady(function() {
-    window.DD_RUM.init({
-    clientToken: 'pub8540e35ee8440c6f75d226884371f84b',
-    applicationId: '530b0df9-4459-4ce8-8ae0-05ef6ce47ebe',
-    site: 'datadoghq.com',
-    service: 'infosys-test-1-frontend',
-    env: 'infosys-test-1',
-    // Specify a version number to identify the deployed version of your application in Datadog 
-    // version: '1.0.0', 
-    sessionSampleRate: 100,
-    sessionReplaySampleRate: 100,
-    trackUserInteractions: true,
-    trackResources: true,
-    trackLongTasks: true,
-    defaultPrivacyLevel: 'allow',
-    });
-      
-    window.DD_RUM.startSessionReplayRecording();
-})
-</script>
 </body>
 
 </html>
