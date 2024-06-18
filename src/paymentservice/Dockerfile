@@ -11,7 +11,7 @@ RUN apt-get install -y curl vim
 # Chris: I'm adding this to debug
 RUN apt-get -y install sudo
 
-RUN mkdir /app/data
+RUN mkdir -p /app/data
 RUN chmod -R 777 /app/data
 
 # Chris: just testing something with version 0.6.1 - broke artifactory so will just use local builds for now. What could go wrong?
