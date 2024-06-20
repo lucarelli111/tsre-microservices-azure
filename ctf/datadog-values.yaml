@@ -69,6 +69,10 @@ datadog:
   asm:
     threats:
       enabled: true
+    sca:
+      enabled: true
+    iast:
+      enabled: true
   ## Enable APM  Remote configuration
   remoteConfiguration:
     enabled: true
