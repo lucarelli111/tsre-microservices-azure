@@ -64,7 +64,11 @@ datadog:
   apm:
     socketEnabled: true
     portEnabled: true
-
+    instrumentation:
+      enabled: true
+  asm:
+    threats:
+      enabled: true
   ## Enable APM  Remote configuration
   remoteConfiguration:
     enabled: true
