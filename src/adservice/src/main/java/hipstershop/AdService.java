@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -133,7 +134,45 @@ public final class AdService {
     for (int i = 0; i < MAX_ADS_TO_SERVE; i++) {
       ads.add(Iterables.get(allAds, random.nextInt(allAds.size())));
     }
+    ad_analytics();
+    
+
     return ads;
+  }
+
+  private void ad_analytics(){
+    String[] advertisers = {"Fruit Tree", "Vegetable Garden", "Good Food", "Fun Toys"};
+
+    String advertiser;
+    int time = (int) (new Date().getTime()/1000L) % 300; // 5 minute repeating schedule
+    int rand = random.nextInt(10);
+    
+
+    if (time < 15) {
+        logger.info("Advertiser '"+ advertisers [ 0 ] + "' on");
+        logger.info("Advertiser '"+ advertisers [ 1 ] + "' on");
+        logger.info("Advertiser '"+ advertisers [ 2 ] + "' on");
+        logger.info("Advertiser '"+ advertisers [ 3 ] + "' on");
+    } else if ((time < 165) && (time > 145)) {
+        logger.info("Advertiser '"+ advertisers [ 1 ] + "' off");
+    }
+
+    //not relying on time to make sure that regarless of execution patterns
+    // we have a defined distribution of advertisers.
+    if (rand < 2){ //20% of the time
+        advertiser = advertisers[3];
+    } else if (rand < 5) { //30% of the time
+        advertiser = advertisers[2];
+    } else if (rand == 5) { //10% of the time
+        advertiser = advertisers[1];
+    } else { //40% of the time
+        advertiser = advertisers[0];
+    }
+    //TODO: remove this line after we are done tweaking.
+    logger.info("Time: " + time + " Rand: " + rand);
+
+    //ad impression
+    logger.info("Ad seen. Advertiser '" + advertiser + "'");
   }
 
   private static AdService getInstance() {
