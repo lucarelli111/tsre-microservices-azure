@@ -135,6 +135,7 @@ public final class AdService {
       ads.add(Iterables.get(allAds, random.nextInt(allAds.size())));
     }
     ad_analytics();
+    
 
     return ads;
   }
