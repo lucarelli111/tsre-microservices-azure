@@ -31,7 +31,7 @@ spec: # specification for deployment resource
                   "host": "paymentdbservice",
                   "port": 3306,
                   "username": "datadog",
-                  "password": "bitsGoodBoy"
+                  "password": "bitsGoodBoy",
                   "reported_hostname": "mariadb"
                 }
               ]
