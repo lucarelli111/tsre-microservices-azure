@@ -20,6 +20,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	grpctrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/google.golang.org/grpc"
 	muxtrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/gorilla/mux"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 	"gopkg.in/DataDog/dd-trace-go.v1/profiler"
@@ -172,6 +173,13 @@ func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
 	var err error
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
+	si := grpctrace.StreamClientInterceptor(grpctrace.WithServiceName("frontend"))
+	ui := grpctrace.UnaryClientInterceptor(grpctrace.WithServiceName("frontend"))
+	*conn, err = grpc.DialContext(ctx, addr,
+		grpc.WithInsecure(),
+		grpc.WithUnaryInterceptor(ui),
+		grpc.WithStreamInterceptor(si))
+	
 	if err != nil {
 		panic(errors.Wrapf(err, "grpc: failed to connect %s", addr))
 	}
