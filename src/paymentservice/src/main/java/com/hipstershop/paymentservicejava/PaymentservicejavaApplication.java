@@ -62,7 +62,7 @@ public class PaymentservicejavaApplication {
             for (int i = 0; i < 1000; i++) {
                 // Select a string from javaStrings array in a round-robin manner
                 String javaString = javaStrings[i % javaStrings.length];
-                String fileName = directoryPath + "/" + javaString + "_" + (fileCounter++) + ".txt";
+                String fileName = directoryPath + "/" + javaString + ".txt";
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
                     writer.write(recordBackup());
                 } catch (IOException e) {
