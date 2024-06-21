@@ -30,12 +30,6 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
-	"go.opentelemetry.io/otel/propagation"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"google.golang.org/grpc"
 )
 
@@ -175,9 +169,6 @@ func main() {
 	var handler http.Handler = r
 	handler = &logHandler{log: log, next: handler} // add logging
 	handler = ensureSessionID(handler)             // add session ID
-	if os.Getenv("ENABLE_TRACING") == "1" {
-		handler = otelhttp.NewHandler(handler, "frontend") // add OTel tracing
-	}
 
 	log.Infof("starting server on " + addr + ":" + srvPort)
 	log.Fatal(http.ListenAndServe(addr+":"+srvPort, handler))
@@ -198,8 +189,8 @@ func initTracing(log logrus.FieldLogger, ctx context.Context, svc *frontendServe
 	tp := sdktrace.NewTracerProvider(
 		sdktrace.WithBatcher(exporter),
 		sdktrace.WithSampler(sdktrace.AlwaysSample()))
-	otel.SetTracerProvider(tp)
-	otel.SetTextMapPropagator(
+	tracer.SetTracerProvider(tp)
+	tracer.SetTextMapPropagator(
 		propagation.NewCompositeTextMapPropagator(
 			propagation.TraceContext{}, propagation.Baggage{}))
 	return tp, err
@@ -240,20 +231,6 @@ func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
 	var err error
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
-	if os.Getenv("ENABLE_TRACING") == "1" {
-		*conn, err = grpc.DialContext(ctx, addr,
-			grpc.WithInsecure(),
-			grpc.WithUnaryInterceptor(otelgrpc.UnaryClientInterceptor()),
-			grpc.WithStreamInterceptor(otelgrpc.StreamClientInterceptor()))
-	} else {
-		// Create the client interceptor using the grpc trace package.
-		si := grpctrace.StreamClientInterceptor(grpctrace.WithServiceName("frontend"))
-		ui := grpctrace.UnaryClientInterceptor(grpctrace.WithServiceName("frontend"))
-		*conn, err = grpc.DialContext(ctx, addr,
-			grpc.WithInsecure(),
-			grpc.WithUnaryInterceptor(ui),
-			grpc.WithStreamInterceptor(si))
-	}
 	if err != nil {
 		panic(errors.Wrapf(err, "grpc: failed to connect %s", addr))
 	}
