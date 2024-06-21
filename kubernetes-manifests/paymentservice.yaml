@@ -31,6 +31,9 @@ spec:
         tags.datadoghq.com/env: "dash2024"
         tags.datadoghq.com/service: "paymentservice"
         tags.datadoghq.com/version: "0.6.1"
+        admission.datadoghq.com/enabled: "true"
+      annotations:
+        admission.datadoghq.com/java-lib.version: "latest"
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
