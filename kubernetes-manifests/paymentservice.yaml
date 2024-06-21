@@ -19,7 +19,7 @@ metadata:
   labels:
       tags.datadoghq.com/env: "dash2024"
       tags.datadoghq.com/service: "paymentservice"
-      tags.datadoghq.com/version: "0.5.0"
+      tags.datadoghq.com/version: "0.6.1"
 spec:
   selector:
     matchLabels:
@@ -30,10 +30,7 @@ spec:
         app: paymentservice
         tags.datadoghq.com/env: "dash2024"
         tags.datadoghq.com/service: "paymentservice"
-        tags.datadoghq.com/version: "0.5.0"
-        admission.datadoghq.com/enabled: "true"
-      annotations:
-        admission.datadoghq.com/java-lib.version: "v1.3.0"
+        tags.datadoghq.com/version: "0.6.1"
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
@@ -89,11 +86,11 @@ spec:
         #     command: ["/bin/grpc_health_probe", "-addr=:50051"]
         resources:
           requests:
-            cpu: 100m
+            cpu: 200m
             memory: 64Mi
           limits:
-            cpu: 200m
-            memory: 512Mi
+            cpu: 400m
+            memory: 2048Mi
 ---
 apiVersion: v1
 kind: Service
