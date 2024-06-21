@@ -20,14 +20,9 @@ import (
 	"net/http"
 	"os"
 	"time"
-
-	grpctrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/google.golang.org/grpc"
 	muxtrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/gorilla/mux"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 	"gopkg.in/DataDog/dd-trace-go.v1/profiler"
-
-	profilerold "cloud.google.com/go/profiler"
-
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -117,19 +112,6 @@ func main() {
 
 	svc := new(frontendServer)
 
-	if os.Getenv("ENABLE_TRACING") == "1" {
-		log.Info("Tracing enabled.")
-		initTracing(log, ctx, svc)
-	} else {
-		log.Info("Tracing disabled.")
-	}
-
-	if os.Getenv("ENABLE_PROFILER") == "1" {
-		log.Info("Profiling enabled.")
-		go initProfiling(log, "frontend", "1.0.0")
-	} else {
-		log.Info("Profiling disabled.")
-	}
 
 	srvPort := port
 	if os.Getenv("PORT") != "" {
@@ -177,47 +159,6 @@ func initStats(log logrus.FieldLogger) {
 	// TODO(arbrown) Implement OpenTelemtry stats
 }
 
-func initTracing(log logrus.FieldLogger, ctx context.Context, svc *frontendServer) (*sdktrace.TracerProvider, error) {
-	mustMapEnv(&svc.collectorAddr, "COLLECTOR_SERVICE_ADDR")
-	mustConnGRPC(ctx, &svc.collectorConn, svc.collectorAddr)
-	exporter, err := otlptracegrpc.New(
-		ctx,
-		otlptracegrpc.WithGRPCConn(svc.collectorConn))
-	if err != nil {
-		log.Warnf("warn: Failed to create trace exporter: %v", err)
-	}
-	tp := sdktrace.NewTracerProvider(
-		sdktrace.WithBatcher(exporter),
-		sdktrace.WithSampler(sdktrace.AlwaysSample()))
-	tracer.SetTracerProvider(tp)
-	tracer.SetTextMapPropagator(
-		propagation.NewCompositeTextMapPropagator(
-			propagation.TraceContext{}, propagation.Baggage{}))
-	return tp, err
-}
-
-func initProfiling(log logrus.FieldLogger, service, version string) {
-	// TODO(ahmetb) this method is duplicated in other microservices using Go
-	// since they are not sharing packages.
-	for i := 1; i <= 3; i++ {
-		log = log.WithField("retry", i)
-		if err := profilerold.Start(profilerold.Config{
-			Service:        service,
-			ServiceVersion: version,
-			// ProjectID must be set if not running on GCP.
-			// ProjectID: "my-project",
-		}); err != nil {
-			log.Warnf("warn: failed to start profiler: %+v", err)
-		} else {
-			log.Info("started Stackdriver profiler")
-			return
-		}
-		d := time.Second * 10 * time.Duration(i)
-		log.Debugf("sleeping %v to retry initializing Stackdriver profiler", d)
-		time.Sleep(d)
-	}
-	log.Warn("warning: could not initialize Stackdriver profiler after retrying, giving up")
-}
 
 func mustMapEnv(target *string, envKey string) {
 	v := os.Getenv(envKey)
