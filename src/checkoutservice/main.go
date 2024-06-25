@@ -34,6 +34,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	// added below to suppord Logs and Traces correlation
+	dd_logrus "gopkg.in/DataDog/dd-trace-go.v1/contrib/sirupsen/logrus"
+    "gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
+
 	pb "github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice/genproto"
 	money "github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice/money"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
@@ -54,6 +58,7 @@ var log *logrus.Logger
 
 func init() {
 	log = logrus.New()
+	log.AddHook(&dd_logrus.DDContextHook{})
 	log.Level = logrus.DebugLevel
 	log.Formatter = &logrus.JSONFormatter{
 		FieldMap: logrus.FieldMap{
