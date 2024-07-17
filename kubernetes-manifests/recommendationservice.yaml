@@ -33,7 +33,7 @@ spec:
         tags.datadoghq.com/version: "0.5.0"
         admission.datadoghq.com/enabled: "true"
       annotations:
-        admission.datadoghq.com/python-lib.version: "v1.6.3"
+        #admission.datadoghq.com/python-lib.version: "v1.6.3"
         ad.datadoghq.com/server.logs: '[{"source": "python"}]'
     spec:
       serviceAccountName: default
