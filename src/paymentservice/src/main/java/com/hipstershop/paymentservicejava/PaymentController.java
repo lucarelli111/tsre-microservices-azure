@@ -38,7 +38,7 @@ public class PaymentController {
             new String(in.readAllBytes(), StandardCharsets.UTF_8); 
             log.info(String.format("Transaction processed: %s ending %s Amount: %s%d.%d", 
             this.getCardtypeByNumber(ccNumber), 
-            ccNumber.substring(ccNumber.length()-5, ccNumber.length()-1), 
+            ccNumber.substring(ccNumber.length()-4, ccNumber.length()-1), 
             currency,
             amount,
             nanos));

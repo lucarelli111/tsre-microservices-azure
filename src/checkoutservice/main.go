@@ -36,7 +36,6 @@ import (
 
 	// added below to suppord Logs and Traces correlation
 	dd_logrus "gopkg.in/DataDog/dd-trace-go.v1/contrib/sirupsen/logrus"
-    "gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 
 	pb "github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice/genproto"
 	money "github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice/money"
@@ -58,7 +57,8 @@ var log *logrus.Logger
 
 func init() {
 	log = logrus.New()
-	log.AddHook(&dd_logrus.DDContextHook{})
+	// Add Datadog context log hook
+    log.AddHook(&dd_logrus.DDContextLogHook{}) 
 	log.Level = logrus.DebugLevel
 	log.Formatter = &logrus.JSONFormatter{
 		FieldMap: logrus.FieldMap{
@@ -110,18 +110,18 @@ func main() {
 	defer profiler.Stop()
 	ctx := context.Background()
 	if os.Getenv("ENABLE_TRACING") == "1" {
-		log.Info("Tracing enabled.")
+		log.WithContext(ctx).Info("Tracing enabled.")
 		initTracing()
 
 	} else {
-		log.Info("Tracing disabled.")
+		log.WithContext(ctx).Info("Tracing disabled.")
 	}
 
 	if os.Getenv("ENABLE_PROFILER") == "1" {
-		log.Info("Profiling enabled.")
+		log.WithContext(ctx).Info("Profiling enabled.")
 		go initProfiling("checkoutservice", "1.0.0")
 	} else {
-		log.Info("Profiling disabled.")
+		log.WithContext(ctx).Info("Profiling disabled.")
 	}
 
 	port := listenPort
@@ -144,11 +144,11 @@ func main() {
 	mustConnGRPC(ctx, &svc.emailSvcConn, svc.emailSvcAddr)
 	mustConnGRPC(ctx, &svc.paymentSvcConn, svc.paymentSvcAddr)
 
-	log.Infof("service config: %+v", svc)
+	log.WithContext(ctx).Infof("service config: %+v", svc)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
-		log.Fatal(err)
+		log.WithContext(ctx).Fatal(err)
 	}
 
 	// Create the server interceptor using the grpc trace package.
@@ -171,9 +171,9 @@ func main() {
 
 	pb.RegisterCheckoutServiceServer(srv, svc)
 	healthpb.RegisterHealthServer(srv, svc)
-	log.Infof("starting to listen on tcp: %q", lis.Addr().String())
+	log.WithContext(ctx).Infof("starting to listen on tcp: %q", lis.Addr().String())
 	err = srv.Serve(lis)
-	log.Fatal(err)
+	log.WithContext(ctx).Fatal(err)
 }
 
 func initStats() {
@@ -197,7 +197,7 @@ func initTracing() {
 		ctx,
 		otlptracegrpc.WithGRPCConn(collectorConn))
 	if err != nil {
-		log.Warnf("warn: Failed to create trace exporter: %v", err)
+		log.WithContext(ctx).Warnf("warn: Failed to create trace exporter: %v", err)
 	}
 	tp := sdktrace.NewTracerProvider(
 		sdktrace.WithBatcher(exporter),
@@ -270,7 +270,7 @@ func (cs *checkoutService) Watch(req *healthpb.HealthCheckRequest, ws healthpb.H
 }
 
 func (cs *checkoutService) PlaceOrder(ctx context.Context, req *pb.PlaceOrderRequest) (*pb.PlaceOrderResponse, error) {
-	log.Infof("[PlaceOrder] user_id=%q user_currency=%q", req.UserId, req.UserCurrency)
+	log.WithContext(ctx).Infof("[PlaceOrder] user_id=%q user_currency=%q", req.UserId, req.UserCurrency)
 
 	orderID, err := uuid.NewUUID()
 	if err != nil {
@@ -295,7 +295,7 @@ func (cs *checkoutService) PlaceOrder(ctx context.Context, req *pb.PlaceOrderReq
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to charge card: %+v", err)
 	}
-	log.Infof("payment went through (transaction_id: %s)", txID)
+	log.WithContext(ctx).Infof("payment went through (transaction_id: %s)", txID)
 
 	shippingTrackingID, err := cs.shipOrder(ctx, req.Address, prep.cartItems)
 	if err != nil {
@@ -313,9 +313,9 @@ func (cs *checkoutService) PlaceOrder(ctx context.Context, req *pb.PlaceOrderReq
 	}
 
 	if err := cs.sendOrderConfirmation(ctx, req.Email, orderResult); err != nil {
-		log.Warnf("failed to send order confirmation to %q: %+v", req.Email, err)
+		log.WithContext(ctx).Warnf("failed to send order confirmation to %q: %+v", req.Email, err)
 	} else {
-		log.Infof("order confirmation email sent to %q", req.Email)
+		log.WithContext(ctx).Infof("order confirmation email sent to %q", req.Email)
 	}
 	resp := &pb.PlaceOrderResponse{Order: orderResult}
 	return resp, nil
