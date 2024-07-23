@@ -23,5 +23,5 @@ if [ -z "$LIMIT" ] || [ -z "$REMAINING" ]; then
 fi
 
 # Output the result
-echo "Rate limit: $LIMIT pulls per 6 hours.":wq
-echo "Remaining pulls: $REMAINING.
+echo "Rate limit: $LIMIT pulls per 6 hours."
+echo "Remaining pulls: $REMAINING"
