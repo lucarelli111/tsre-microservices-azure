@@ -11,6 +11,7 @@ TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repo
 
 # Get Data we need
 RESPONSE=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest)
+echo $RESPONSE
 
 # Extract RateLimit-Limit and RateLimit-Remaining
 LIMIT=$(extract_header_value "$RESPONSE" "RateLimit-Limit")
