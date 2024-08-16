@@ -1,10 +1,12 @@
+
+# Deployment definition
 apiVersion: apps/v1
 kind: Deployment # what to create?
 metadata:
   name: paymentdbservice
   labels:
     name: mysql
-    tags.datadoghq.com/env: "dash2024"
+    tags.datadoghq.com/env: "ddenv"
     tags.datadoghq.com/service: "paymentdbservice"
     tags.datadoghq.com/version: "0.5.0"
 spec: # specification for deployment resource
@@ -18,7 +20,7 @@ spec: # specification for deployment resource
       labels:
         app: paymentdbservice # service will look for this label
         name: paymentdbservice
-        tags.datadoghq.com/env: "dash2024"
+        tags.datadoghq.com/env: "ddenv"
         tags.datadoghq.com/service: "paymentdbservice"
         tags.datadoghq.com/version: "0.5.0"
       annotations:
@@ -41,11 +43,13 @@ spec: # specification for deployment resource
     spec: # specification for pods
       containers: # we can have one or more containers
       - name: paymentdbservice
-        image: mariadb
+        image: public.ecr.aws/v6x4t1k2/paymentdbservice:298ecf5
         ports:
         - containerPort: 3306
         env:
         #- name: MARIADB_RANDOM_ROOT_PASSWORD
+        - name: DD_TRACE_AGENT_URL
+          value: "unix:///var/run/datadog/apm.socket"
         - name: MARIADB_ALLOW_EMPTY_ROOT_PASSWORD
           value: "0" # if it is 1 and root_password is set, root_password takes precedance
         - name: MARIADB_ROOT_PASSWORD
@@ -92,9 +96,10 @@ metadata:
   name: mysql-initdb-config
 data:
   init.sql: |
-      CREATE USER datadog@'%' IDENTIFIED by 'bitsGoodBoy';
+      CREATE USER datadog@'%' IDENTIFIED BY 'bitsGoodBoy';
       ALTER USER datadog@'%' WITH MAX_USER_CONNECTIONS 5;
       GRANT SLAVE MONITOR ON *.* TO 'datadog'@'%' WITH MAX_USER_CONNECTIONS 5;
+      GRANT REPLICATION CLIENT ON *.* TO 'datadog'@'%' WITH MAX_USER_CONNECTIONS 5;
       GRANT PROCESS ON *.* TO datadog@'%';
       GRANT SELECT ON performance_schema.* TO 'datadog'@'%';
       CREATE SCHEMA IF NOT EXISTS datadog;
