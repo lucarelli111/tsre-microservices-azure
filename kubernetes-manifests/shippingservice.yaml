@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Deployment definition
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: shippingservice
   labels:
-    tags.datadoghq.com/env: "dsah2024"
+    tags.datadoghq.com/env: "trseenv"
     tags.datadoghq.com/service: "shippingservice"
     tags.datadoghq.com/version: "0.5.0"
 spec:
@@ -28,7 +29,7 @@ spec:
     metadata:
       labels:
         app: shippingservice
-        tags.datadoghq.com/env: "dsah2024"
+        tags.datadoghq.com/env: "trseenv"
         tags.datadoghq.com/service: "shippingservice"
         tags.datadoghq.com/version: "0.5.0"
         admission.datadoghq.com/enabled: "true"
@@ -48,10 +49,12 @@ spec:
               - all
           privileged: false
           # readOnlyRootFilesystem: true
-        image: shippingservice
+        image: public.ecr.aws/v6x4t1k2/shippingservice:tsre.v0.5.0
         ports:
         - containerPort: 50051
         env:
+        - name: DD_TRACE_AGENT_URL
+          value: "unix:///var/run/datadog/apm.socket"
         - name: PORT
           value: "50051"
         - name: DISABLE_STATS
@@ -73,6 +76,9 @@ spec:
         # livenessProbe:
         #   exec:
         #     command: ["/bin/grpc_health_probe", "-addr=:50051"]
+        volumeMounts:
+        - name: apmsocketpath
+          mountPath: /var/run/datadog           
         resources:
           requests:
             cpu: 100m
@@ -80,6 +86,10 @@ spec:
           limits:
             cpu: 200m
             memory: 128Mi
+      volumes:
+        - hostPath:
+            path: /var/run/datadog/
+          name: apmsocketpath 
 ---
 apiVersion: v1
 kind: Service

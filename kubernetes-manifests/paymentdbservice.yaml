@@ -6,7 +6,7 @@ metadata:
   name: paymentdbservice
   labels:
     name: mysql
-    tags.datadoghq.com/env: "dash2024"
+    tags.datadoghq.com/env: "tsreenv"
     tags.datadoghq.com/service: "paymentdbservice"
     tags.datadoghq.com/version: "0.5.0"
 spec: # specification for deployment resource
@@ -20,7 +20,7 @@ spec: # specification for deployment resource
       labels:
         app: paymentdbservice # service will look for this label
         name: paymentdbservice
-        tags.datadoghq.com/env: "dash2024"
+        tags.datadoghq.com/env: "tsreenv"
         tags.datadoghq.com/service: "paymentdbservice"
         tags.datadoghq.com/version: "0.5.0"
       annotations:
@@ -43,7 +43,7 @@ spec: # specification for deployment resource
     spec: # specification for pods
       containers: # we can have one or more containers
       - name: paymentdbservice
-        image: mariadb
+        image: public.ecr.aws/v6x4t1k2/paymentdbservice:tsre.v0.5.0
         ports:
         - containerPort: 3306
         env:
@@ -59,6 +59,8 @@ spec: # specification for deployment resource
             mountPath: /docker-entrypoint-initdb.d
           - name: mariadb-config
             mountPath: /etc/mysql/conf.d/ # directory will be cleaned at the beginning
+          - name: apmsocketpath
+            mountPath: /var/run/datadog 
       volumes:
         - name: mysql-initdb
           configMap:
@@ -70,6 +72,9 @@ spec: # specification for deployment resource
             items:
             - key: mariadb.cnf
               path: plugin-configuration.cnf
+        - hostPath:
+            path: /var/run/datadog/
+          name: apmsocketpath
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -153,4 +158,3 @@ spec:
   - name: tcp-mariadb
     port: 3306
     targetPort: 3306
-    

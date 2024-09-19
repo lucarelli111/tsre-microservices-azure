@@ -11,12 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# Deployment definitionapi
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: loadgenerator
   labels:
-      tags.datadoghq.com/env: "dash2024"
+      tags.datadoghq.com/env: "tsreenv"
       tags.datadoghq.com/service: "loadgenerator"
       tags.datadoghq.com/version: "1.0"
 spec:
@@ -72,12 +74,17 @@ spec:
               - all
           privileged: false
           readOnlyRootFilesystem: true
-        image: loadgenerator
+        image: public.ecr.aws/v6x4t1k2/loadgenerator:tsre.v1.0
         env:
+        - name: DD_TRACE_AGENT_URL
+          value: "unix:///var/run/datadog/apm.socket"
         - name: FRONTEND_ADDR
           value: "frontend:80"
         - name: USERS
           value: "10"
+        volumeMounts:
+        - name: apmsocketpath
+          mountPath: /var/run/datadog 
         resources:
           requests:
             cpu: 300m
@@ -85,3 +92,7 @@ spec:
           limits:
             cpu: 500m
             memory: 512Mi
+      volumes:
+        - hostPath:
+            path: /var/run/datadog/
+          name: apmsocketpath

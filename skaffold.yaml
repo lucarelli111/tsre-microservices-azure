@@ -22,31 +22,11 @@ build:
   # must provide a "default repo" using one of the methods described
   # here:
   # https://skaffold.dev/docs/concepts/#image-repository-handling
-  - image: emailservice
-    context: src/emailservice
-  - image: productcatalogservice
-    context: src/productcatalogservice
-  - image: recommendationservice
-    context: src/recommendationservice
-  - image: shippingservice
-    context: src/shippingservice
-  - image: checkoutservice
-    context: src/checkoutservice
   - image: paymentservice
     #context: src/paymentservicejava
     context: src/paymentservice
-  - image: currencyservice
-    context: src/currencyservice
-  - image: cartservice
-    context: src/cartservice/src
-    docker:
-      dockerfile: Dockerfile
   - image: frontend
     context: src/frontend
-  - image: adservice
-    context: src/adservice
-  - image: paymentdbservice
-    context: src/paymentdbservice
   tagPolicy:
     gitCommit: {}
   local:
@@ -63,21 +43,3 @@ profiles:
 # The "network-policies" profile is not used by default.
 # You can use it in isolation or in combination with other profiles:
 #     skaffold run -p network-policies, debug
-
----
-apiVersion: skaffold/v3
-kind: Config
-metadata:
-  name: loadgenerator
-requires:
-- configs:
-  - app
-build:
-  artifacts:
-  - image: loadgenerator
-    context: src/loadgenerator
-manifests:
-  rawYaml:
-  - ./kubernetes-manifests/loadgenerator.yaml
-deploy:
-  kubectl: {}

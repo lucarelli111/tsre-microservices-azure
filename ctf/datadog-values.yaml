@@ -1,5 +1,7 @@
 ###
-## Datadog Agent and Cluster Helm Configuration
+## Datadog Agent and Cluster Helm Configuration for AWS EKS
+## Compatibility list: https://docs.datadoghq.com/agent/kubernetes/compatibility/
+## Use datadog-values-gke-mac.yaml for GKE and Mac Kubernetes
 ###
 
 ## Naming and Traget Architecture
@@ -35,7 +37,7 @@ datadog:
   # logLevel: info
   ## Set global tags
   tags:
-    - env: dash2024
+    - env: tsreenv
 
   ## Enable Log collections
   logs:
@@ -44,10 +46,6 @@ datadog:
 
   ## Collect kubernetes events
   collectEvents: true
-
-  ## Enable Network Performance monitoring
-  networkMonitoring:
-    enabled: true
 
   ## Enable process collection
   # If can't detect cluster name:
@@ -77,16 +75,30 @@ datadog:
   remoteConfiguration:
     enabled: true
 
+  ## Enable Network Performance monitoring
+  networkMonitoring:
+    enabled: true # Set to false for GKE & Mac Kubernetes - For TSRE need to be enabled
+
   ## Enable Cloud Security Posture Management and Cloud Workload Security
   securityAgent:
-    runtime:
-      enabled: true
+    # datadog.securityAgent.compliance.enabled -- Set to true to enable Cloud Security Posture Management (CSPM)
     compliance:
-      enabled: true
+      enabled: true # Set to false for GKE & Mac Kubernetes - For TSRE need to be enabled
+
+    runtime:
+      # datadog.securityAgent.runtime.enabled -- Set to true to enable Cloud Workload Security (CWS)
+      enabled: true # Set to false for GKE & Mac Kubernetes - For TSRE need to be enabled
+    
+      # datadog.securityAgent.runtime.fimEnabled -- Set to true to enable Cloud Workload Security (CWS) File Integrity Monitoring
+      fimEnabled: true # Set to false for GKE & Mac Kubernetes - For TSRE need to be enabled
+
+      network:
+        # datadog.securityAgent.runtime.network.enabled -- Set to true to enable the collection of CWS network events
+        enabled: true # Set to false for GKE & Mac Kubernetes - For TSRE need to be enabled
       
   ## Enable USM
   serviceMonitoring:
-    enabled: true
+    enabled: true # Set to false for GKE & Mac Kubernetes - For TSRE need to be enabled
 
   ## Set up kubelet communication configuration
   kubelet:
@@ -96,7 +108,7 @@ datadog:
           fieldPath: status.hostIP
   # Enable data to be sent with invalid certs (required for kind cluster)
     tlsVerify: false
-  clusterName: dash2024
+  clusterName: tsreenv
 
   ## Set up global environment for agent and pods communication
   env:

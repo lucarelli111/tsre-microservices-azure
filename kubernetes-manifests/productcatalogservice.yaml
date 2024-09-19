@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Deployment definition
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: productcatalogservice
   labels:
-    tags.datadoghq.com/env: "dash2024"
+    tags.datadoghq.com/env: "tsreenv"
     tags.datadoghq.com/service: "productcatalogservice"
     tags.datadoghq.com/version: "0.5.0"
 spec:
@@ -28,7 +29,7 @@ spec:
     metadata:
       labels:
         app: productcatalogservice
-        tags.datadoghq.com/env: "dash2024"
+        tags.datadoghq.com/env: "tsreenv"
         tags.datadoghq.com/service: "productcatalogservice"
         tags.datadoghq.com/version: "0.5.0"
         admission.datadoghq.com/enabled: "true"
@@ -49,10 +50,12 @@ spec:
           #     - all
           # privileged: false
           # readOnlyRootFilesystem: true
-        image: productcatalogservice
+        image: public.ecr.aws/v6x4t1k2/productcatalogservice:tsre.v0.5.0
         ports:
         - containerPort: 3550
         env:
+        - name: DD_TRACE_AGENT_URL
+          value: "unix:///var/run/datadog/apm.socket"
         - name: PORT
           value: "3550"
         - name: DISABLE_STATS
@@ -73,6 +76,9 @@ spec:
         # livenessProbe:
         #   exec:
         #     command: ["/bin/grpc_health_probe", "-addr=:3550"]
+        volumeMounts:
+        - name: apmsocketpath
+          mountPath: /var/run/datadog
         resources:
           requests:
             cpu: 100m
@@ -80,6 +86,10 @@ spec:
           limits:
             cpu: 200m
             memory: 128Mi
+      volumes:
+        - hostPath:
+            path: /var/run/datadog/
+          name: apmsocketpath
 ---
 apiVersion: v1
 kind: Service
