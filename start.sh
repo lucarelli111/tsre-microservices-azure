@@ -18,17 +18,15 @@ docker pull redis:alpine
 # docker pull mariadb
 # docker pull busybox:latest
 
-kubectl apply -f kube-manifests/adservice.yaml
-kubectl apply -f kube-manifests/cartservice.yaml
-kubectl apply -f kube-manifests/checkoutservice.yaml
-kubectl apply -f kube-manifests/currencyservice.yaml
-#kubectl apply -f kube-manifests/frontend.yaml
-kubectl apply -f kube-manifests/loadgenerator.yaml
-#kubectl apply -f kube-manifests/paymentservice.yaml
-kubectl apply -f kube-manifests/productcatalogservice.yaml
-kubectl apply -f kube-manifests/recommendationservice.yaml
-kubectl apply -f kube-manifests/redis.yaml
-kubectl apply -f kube-manifests/shippingservice.yaml
+kubectl apply -f kubernetes-manifests/adservice.yaml
+kubectl apply -f kubernetes-manifests/cartservice.yaml
+kubectl apply -f kubernetes-manifests/checkoutservice.yaml
+kubectl apply -f kubernetes-manifests/currencyservice.yaml
+kubectl apply -f kubernetes-manifests/loadgenerator.yaml
+kubectl apply -f kubernetes-manifests/productcatalogservice.yaml
+kubectl apply -f kubernetes-manifests/recommendationservice.yaml
+kubectl apply -f kubernetes-manifests/redis.yaml
+kubectl apply -f kubernetes-manifests/shippingservice.yaml
 
 # Skaffold build and run
 ## Loop until 18 pods are up 
