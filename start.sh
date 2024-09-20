@@ -32,7 +32,9 @@ kubectl apply -f kubernetes-manifests/shippingservice.yaml
 # Skaffold build and run
 ## Loop until 18 pods are up 
 skaffold build --platform=linux/amd64
-until [[ $(kubectl get pods | awk 'END{print NR}') -gt 17 ]]; do skaffold run --platform=linux/amd64; done
+#until [[ $(kubectl get pods | awk 'END{print NR}') -gt 17 ]]; do skaffold run --platform=linux/amd64; done
+
+skaffold run --platform=linux/amd64
 
 echo "> Configuring extras"
 # Setting variable to check agent status
