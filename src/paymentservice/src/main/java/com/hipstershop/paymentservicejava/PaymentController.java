@@ -2,6 +2,7 @@ package com.hipstershop.paymentservicejava;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 import java.util.logging.Logger;
@@ -24,7 +25,7 @@ public class PaymentController {
     @Autowired
     PaymentRecordRepository repo;
 
-    public void clearPayment(ChargeRequest request) throws LockTimeoutException {
+    public String clearPayment(ChargeRequest request) throws LockTimeoutException {
         String currency = request.getAmount().getCurrencyCode();
         Long amount = request.getAmount().getUnits();
         int nanos = request.getAmount().getNanos();
@@ -36,9 +37,9 @@ public class PaymentController {
             URL u = new URL("https://developer.paypal.com/");
             InputStream in = u.openStream();
             new String(in.readAllBytes(), StandardCharsets.UTF_8); 
-            log.info(String.format("Transaction processed: %s ending %s Amount: %s%d.%d", 
+            log.info(String.format("Processing transaction: %s ending %s Amount: %s%d.%d", 
             this.getCardtypeByNumber(ccNumber), 
-            ccNumber.substring(ccNumber.length()-5, ccNumber.length()-1), 
+            ccNumber.substring(ccNumber.length()-5), 
             currency,
             amount,
             nanos));
@@ -73,8 +74,16 @@ public class PaymentController {
                 rec.setExpirationYear(request.getCreditCard().getCreditCardExpirationYear());
                 rec.setPaymentstatus("transaction rate limited");
                 repo.save(rec);
-        }
+        } 
+        return generateTransactionId();
     }
+
+    private String generateTransactionId() {
+        byte[] array = new byte[7]; // length is bounded by 7
+        new Random().nextBytes(array);
+        return new String(array, Charset.forName("UTF-8"));
+    }
+
 
     private String getCardtypeByNumber(String creditcardNumber) {
         if(creditcardNumber.startsWith("4")) {

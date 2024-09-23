@@ -12,14 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Deployment definition
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: paymentservice
   labels:
-      tags.datadoghq.com/env: "infosys-test-1"
+      tags.datadoghq.com/env: "tsreenv"
       tags.datadoghq.com/service: "paymentservice"
-      tags.datadoghq.com/version: "0.5.0"
+      tags.datadoghq.com/version: "0.6.1"
 spec:
   selector:
     matchLabels:
@@ -28,12 +29,12 @@ spec:
     metadata:
       labels:
         app: paymentservice
-        tags.datadoghq.com/env: "infosys-test-1"
+        tags.datadoghq.com/env: "tsreenv"
         tags.datadoghq.com/service: "paymentservice"
-        tags.datadoghq.com/version: "0.5.0"
+        tags.datadoghq.com/version: "0.6.1"
         admission.datadoghq.com/enabled: "true"
       annotations:
-        admission.datadoghq.com/java-lib.version: "v1.3.0"
+        admission.datadoghq.com/java-lib.version: "latest"
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
@@ -55,6 +56,8 @@ spec:
         ports:
         - containerPort: 50051
         env:
+        - name: DD_TRACE_AGENT_URL
+          value: "unix:///var/run/datadog/apm.socket"
         - name: SPRING_DATASOURCE_URL
           value: "jdbc:mariadb://paymentdbservice:3306/paymentdb?useUnicode=true&characterEncoding=utf8&useSSL=false"
         - name: SPRING_DATASOURCE_USERNAME
@@ -87,13 +90,20 @@ spec:
         # livenessProbe:
         #   exec:
         #     command: ["/bin/grpc_health_probe", "-addr=:50051"]
+        volumeMounts:
+        - name: apmsocketpath
+          mountPath: /var/run/datadog          
         resources:
           requests:
-            cpu: 100m
+            cpu: 200m
             memory: 64Mi
           limits:
-            cpu: 200m
-            memory: 512Mi
+            cpu: 400m
+            memory: 2048Mi
+      volumes:
+        - hostPath:
+            path: /var/run/datadog/
+          name: apmsocketpath 
 ---
 apiVersion: v1
 kind: Service

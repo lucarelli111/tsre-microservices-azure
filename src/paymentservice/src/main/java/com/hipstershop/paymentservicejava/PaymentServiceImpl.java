@@ -1,5 +1,7 @@
 package com.hipstershop.paymentservicejava;
 
+import java.nio.charset.Charset;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,9 +36,9 @@ public class PaymentServiceImpl extends PaymentServiceGrpc.PaymentServiceImplBas
                 log.finest("Test credit card number received. Will not charge the card.");
             }
             
-            
+            String transactionId = "none";
             try {
-                controller.clearPayment(request);
+                transactionId = controller.clearPayment(request);
             } catch(Exception e) {
                 this.log.log(Level.SEVERE, e.getClass().getName() + " occurred. Cannot process payment transaction.");
                 com.google.rpc.Status status = com.google.rpc.Status.newBuilder()
@@ -52,7 +54,7 @@ public class PaymentServiceImpl extends PaymentServiceGrpc.PaymentServiceImplBas
             }
             // build the response
             ChargeResponse reply = ChargeResponse.newBuilder().
-                setTransactionId("asdfasdfsafd").
+                setTransactionId(transactionId).
                 build();
 
             responseObserver.onNext(reply);
