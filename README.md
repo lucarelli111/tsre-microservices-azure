@@ -217,24 +217,24 @@ microservices](./ctf/static/arch.png)](./ctf/static/arch.png)
 | [loadgenerator](./src/loadgenerator)                 | Python/Locust | Continuously sends requests imitating realistic user shopping flows to the frontend.                                              |
 
 
-## How to ?
+## How to Use
 
 ### Datadog Agent
-The datadog cluster agent configuration is in `ctf/datadog-values.yaml`. 
+The Datadog Cluster Agent configuration is located in `ctf/datadog-values.yaml`.
 
-[!Note] If you are running the datadog cluster agent on a local docker instance or in Google Cloud pay attention to the settings that need to be disabled. (e.g datadog.networkMonitoring.enabled)
+> **Note:** If you are running the Datadog Cluster Agent locally (e.g., via Docker) or on Google Cloud, ensure that certain settings, such as `datadog.networkMonitoring.enabled`, are disabled.
 
-### Running the App 
-All configuration `yaml` file for each services are in `kubernetes-manifests` directory.
+### Running the Application
+All service configuration files are available in the `kubernetes-manifests` directory.
 
-When using the [TSRE Terraform Script](https://github.com/DataDog/trse-terraform) - it will automatically start the app for you using the `start.sh`.
+If using the [TSRE Terraform Script](https://github.com/DataDog/trse-terraform), the application will be started automatically using `start.sh`.
 
-During the TSRE challenges there is a need to update the `paymentservice` and `frontend` code-base - the `update.sh` script can be used to reload the new code base. 
+For TSRE challenges requiring updates to the `paymentservice` and `frontend` codebase, use the `update.sh` script to reload the changes.
 
-If you are running the TSRE-Microservices on your local computer or not using the [TSRE Terraform Script](https://github.com/DataDog/trse-terraform) you can use the below commands from the `tsre-microservices` repository: 
+If you are running TSRE Microservices locally or not using the [TSRE Terraform Script](https://github.com/DataDog/trse-terraform), run the following commands from the `tsre-microservices` repository to start the services:
 
-```
-# Run the services which have pre-built images in AWS Public Registry:
+```bash
+# Deploy services with pre-built images from AWS Public Registry:
 kubectl apply -f kubernetes-manifests/adservice.yaml
 kubectl apply -f kubernetes-manifests/cartservice.yaml
 kubectl apply -f kubernetes-manifests/checkoutservice.yaml
@@ -247,36 +247,37 @@ kubectl apply -f kubernetes-manifests/recommendationservice.yaml
 kubectl apply -f kubernetes-manifests/redis.yaml
 kubectl apply -f kubernetes-manifests/shippingservice.yaml
 
-# Run the paymentservice and frontend services which are not pre-built
-skaffold build 
+# Deploy paymentservice and frontend (services not pre-built):
+skaffold build
 skaffold run
 ```
 
 ### Rebuilding the Services
 
-Here are the command needed to rebuild the services after you made a code update in the `src` code:
-1. Make sure you have setup a IAM user in the DPN Network IAM which has read/write access to the Public ECR Registry (E.g. AWS user)
+To rebuild services after making code changes in the `src` directory:
 
-2. On your local machine - authenticate docker with IAM user you created (replace the **username** and **password-stdin**):
-```
-aws ecr-public get-login-password --region us-east-1 | docker login --username <Replace with Username> --password-stdin <Replace with Password>
-```
+1. Ensure that your IAM user in the DPN Network IAM has read/write access to the Public ECR Registry (e.g., AWS user).
 
-3. Now you can rebuld the images - Run from **tsre-microservices** directory (replace the <tag-name>)
-```
-docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/adservice:<tag-name> --push src/adservice/.
-docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/cartservice:<tag-name> --push src/cartservice/src/.
-docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/checkoutservice:<tag-name> --push src/checkoutservice/.
-docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/currencyservice:<tag-name> --push src/currencyservice/.
-docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/emailservice:<tag-name> --push src/emailservice/.
-docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/loadgenerator:<tag-name> --push src/loadgenerator/.
-docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/paymentdbservice:<tag-name> --push src/paymentdbservice/.
-docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/productcatalogservice:<tag-name> --push src/productcatalogservice/.
-docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/recommendationservice:<tag-name> --push src/recommendationservice/.
-docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/shippingservice:<tag-name> --push src/shippingservice/.
+2. Authenticate Docker with your IAM user on your local machine (replace `<Username>` and `<Password>`):
+```bash
+aws ecr-public get-login-password --region us-east-1 | docker login --username <Username> --password-stdin <Password>
 ```
 
-4. Update the `spec.template.spec.containers.image` with the appropriate tag in the **tsre-microservices/ctf/<servicename>.yaml** file 
+3. Rebuild the images (replace `<tag-name>` as needed). Run these commands from the `tsre-microservices` directory:
+```bash
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/adservice:<tag-name> --push src/adservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/cartservice:<tag-name> --push src/cartservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/checkoutservice:<tag-name> --push src/checkoutservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/currencyservice:<tag-name> --push src/currencyservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/emailservice:<tag-name> --push src/emailservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/loadgenerator:<tag-name> --push src/loadgenerator/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/paymentdbservice:<tag-name> --push src/paymentdbservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/productcatalogservice:<tag-name> --push src/productcatalogservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/recommendationservice:<tag-name> --push src/recommendationservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/shippingservice:<tag-name> --push src/shippingservice/
+```
+
+4. Update the `spec.template.spec.containers.image` in the respective `tsre-microservices/ctf/<servicename>.yaml` file with the appropriate tag.
 
 ## Misc
 
