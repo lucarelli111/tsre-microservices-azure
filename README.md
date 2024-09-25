@@ -180,12 +180,10 @@ If you would like to contribute features or fixes to this app, see the [Developm
 ---
 -->
 
-# TSKO 2024 - DPN - Fun time with Swagstore
+# DPN Tears of SRE Microservices - Swagstore
 
-Welcome to TSKO 2024 - Datadog Partner Network Challenge !!
-Your goal will be to capture all the flags related to a micro-service architected application called **Swagstore** using Datadog.
+The Swagstore app consists of an 12-tier microservices application. The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them.
 
-The app consists of an 12-tier microservices application. The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them.
 It is a fictitious e-commerce swag store, don't expect to receive swags :grinning:
 
 ## Screenshots
@@ -219,43 +217,67 @@ microservices](./ctf/static/arch.png)](./ctf/static/arch.png)
 | [loadgenerator](./src/loadgenerator)                 | Python/Locust | Continuously sends requests imitating realistic user shopping flows to the frontend.                                              |
 
 
-## How to ?
+## How to Use
 
-The datadog cluster agent configuration is in `ctf/datadog-values.yaml`.
-All configuration `yaml` file for each services are in `kubernetes-manifests` directory.
+### Datadog Agent
+The Datadog Cluster Agent configuration is located in `ctf/datadog-values.yaml`.
 
-The only script you should need is `update.sh` to reload all configurations.
+> **Note:** If you are running the Datadog Cluster Agent locally (e.g., via Docker) or on Google Cloud, ensure that certain settings, such as `datadog.networkMonitoring.enabled`, are disabled.
 
-## Useful command
+### Running the Application
+All service configuration files are available in the `kubernetes-manifests` directory.
 
-Get all pods running
+If using the [TSRE Terraform Script](https://github.com/DataDog/trse-terraform), the application will be started automatically using `start.sh`.
+
+For TSRE challenges requiring updates to the `paymentservice` and `frontend` codebase, use the `update.sh` script to reload the changes.
+
+If you are running TSRE Microservices locally or not using the [TSRE Terraform Script](https://github.com/DataDog/trse-terraform), run the following commands from the `tsre-microservices` repository to start the services:
+
 ```bash
-kubectl get pods
+# Deploy services with pre-built images from AWS Public Registry:
+kubectl apply -f kubernetes-manifests/adservice.yaml
+kubectl apply -f kubernetes-manifests/cartservice.yaml
+kubectl apply -f kubernetes-manifests/checkoutservice.yaml
+kubectl apply -f kubernetes-manifests/currencyservice.yaml
+kubectl apply -f kubernetes-manifests/emailservice.yaml
+kubectl apply -f kubernetes-manifests/loadgenerator.yaml
+kubectl apply -f kubernetes-manifests/paymentdbservice.yaml
+kubectl apply -f kubernetes-manifests/productcatalogservice.yaml
+kubectl apply -f kubernetes-manifests/recommendationservice.yaml
+kubectl apply -f kubernetes-manifests/redis.yaml
+kubectl apply -f kubernetes-manifests/shippingservice.yaml
+
+# Deploy paymentservice and frontend (services not pre-built):
+skaffold build
+skaffold run
 ```
 
-Get all services running
+### Rebuilding the Services
+
+To rebuild services after making code changes in the `src` directory:
+
+1. Ensure that your IAM user in the DPN Network IAM has read/write access to the Public ECR Registry (e.g., AWS user).
+
+2. Authenticate Docker with your IAM user on your local machine (replace `<Username>` and `<Password>`):
 ```bash
-kubectl get svc
+aws ecr-public get-login-password --region us-east-1 | docker login --username <Username> --password-stdin <Password>
 ```
 
-Check the status of *datadog-agent*
-(Technically you can run any agent command from there including *agent configcheck* for example)
+3. Rebuild the images (replace `<tag-name>` as needed). Run these commands from the `tsre-microservices` directory:
 ```bash
-kubectl exec $AGENT_POD -- agent status
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/adservice:<tag-name> --push src/adservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/cartservice:<tag-name> --push src/cartservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/checkoutservice:<tag-name> --push src/checkoutservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/currencyservice:<tag-name> --push src/currencyservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/emailservice:<tag-name> --push src/emailservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/loadgenerator:<tag-name> --push src/loadgenerator/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/paymentdbservice:<tag-name> --push src/paymentdbservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/productcatalogservice:<tag-name> --push src/productcatalogservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/recommendationservice:<tag-name> --push src/recommendationservice/
+docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k2/shippingservice:<tag-name> --push src/shippingservice/
 ```
 
-If the control plane goes down you can restart it with
-```bash
-minikube start
-```
-
-## Points scoring
-
-> Points
-> * OnBoarding - 15 points
-> * C-Level Request - 80 points
-> * Support Tickets  - 140 points
-> * Total        - 235 points
+4. Update the `spec.template.spec.containers.image` in the respective `tsre-microservices/ctf/<servicename>.yaml` file with the appropriate tag.
 
 ## Misc
 
