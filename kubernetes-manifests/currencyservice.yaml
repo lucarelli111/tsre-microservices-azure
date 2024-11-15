@@ -58,6 +58,18 @@ spec:
         - name: grpc
           containerPort: 7000
         env:
+        - name: DD_ENV
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/env']
+        - name: DD_SERVICE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/service']
+        - name: DD_VERSION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/version']
         - name: DD_TRACE_AGENT_URL
           value: "unix:///var/run/datadog/apm.socket"
         - name: PORT
