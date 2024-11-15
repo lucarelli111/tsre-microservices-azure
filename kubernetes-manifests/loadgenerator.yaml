@@ -76,6 +76,18 @@ spec:
           readOnlyRootFilesystem: true
         image: public.ecr.aws/v6x4t1k2/loadgenerator:tsre.v1.0
         env:
+        - name: DD_ENV
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/env']
+        - name: DD_SERVICE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/service']
+        - name: DD_VERSION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/version']
         - name: DD_TRACE_AGENT_URL
           value: "unix:///var/run/datadog/apm.socket"
         - name: FRONTEND_ADDR
