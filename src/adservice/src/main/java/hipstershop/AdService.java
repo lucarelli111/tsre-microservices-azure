@@ -146,6 +146,7 @@ public final class AdService {
     String advertiser;
     int time = (int) (new Date().getTime()/1000L) % 300; // 5 minute repeating schedule
     int rand = random.nextInt(10);
+    int adid = random.nextInt(100);
     
 
     if (time < 15) {
@@ -168,12 +169,25 @@ public final class AdService {
     } else { //40% of the time
         advertiser = advertisers[0];
     }
-    //TODO: remove this line after we are done tweaking.
-    logger.info("Time: " + time + " Rand: " + rand);
 
-    //ad impression
-    logger.info("Ad seen. Advertiser '" + advertiser + "'");
-  }
+    logger.debug("Ad selected. Advertiser '" + advertiser + "'");
+    //Let's create interesting error logs here
+    if (adid < 20) { //we are generating an error log for 20% of the requests
+        log.error("Unable to display ad id " + adid);
+        //We will generate 3 more different error patterns
+        if (adid < 10){
+            log.error("Ad id " + adid + " has malformed JSON in line " + adid * 2 );
+        } else if (adid < 14){
+            log.error("Unable to connect to the ad network for advertiser '" + advertiser + "'");
+        } else if (adid < 17){
+            log.error("Unknown ad id " + adid);
+        } else {
+            log.error("Invalid combination. Advertiser: '" + advertiser + "' Ad id: " + adid);
+        }
+   } else {
+        //ad impression
+        logger.info("Ad seen. Advertiser '" + advertiser + "'");
+   }
 
   private static AdService getInstance() {
     return service;
