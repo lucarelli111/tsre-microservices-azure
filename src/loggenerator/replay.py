@@ -25,6 +25,7 @@ logger.info("Log Replay is starting.")
 def replay(): 
     logfiles = os.listdir(path=LOGS_DIRECTORY)
     logfiles.sort()
+    logger.info("Files found in directory: {}".format(logfiles))
     logger.info("{} logfiles found. starting replay...".format(len(logfiles)))
     iteration = 1
     logs_sent = 0
