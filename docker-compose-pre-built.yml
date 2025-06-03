@@ -77,6 +77,9 @@ services:
       - DD_TRACE_SAMPLE_RATE=1
       - DD_RUNTIME_METRICS_ENABLED=true
       - DD_PROFILING_ENABLED=true
+      # Security stuff
+      - DD_APPSEC_ENABLED=true
+      - DD_IAST_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
@@ -93,6 +96,9 @@ services:
       - DD_PROFILING_ENABLED=true
       - DD_LOGS_INJECTION=true
       - DD_TRACE_SAMPLE_RATE=1
+      # Security stuff
+      - DD_APPSEC_ENABLED=true
+      - DD_IAST_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
@@ -113,6 +119,9 @@ services:
       - DD_PROFILING_ENABLED=true
       - DD_LOGS_INJECTION=true
       - DD_TRACE_SAMPLE_RATE=1
+      # Security stuff
+      - DD_APPSEC_ENABLED=true
+      - DD_IAST_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
@@ -129,6 +138,10 @@ services:
       - DD_LOGS_INJECTION=true
       - DD_TRACE_SAMPLE_RATE=1
       - DD_PROFILING_ENABLED=true
+      - POOL_USER=pooluser
+      # Security stuff
+      - DD_APPSEC_ENABLED=true
+      - DD_IAST_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
@@ -153,6 +166,9 @@ services:
       - DD_LOGS_INJECTION=true
       - DD_TRACE_SAMPLE_RATE=1
       - DD_PROFILING_ENABLED=true
+      # Security stuff
+      - DD_APPSEC_ENABLED=true
+      - DD_IAST_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
@@ -183,7 +199,9 @@ services:
       - DD_APM_NON_LOCAL_TRAFFIC=true
       - DD_PROFILING_ENABLED=true
       - DD_RUNTIME_METRICS_ENABLED=true
+      # Security stuff
       - DD_APPSEC_ENABLED=true
+      - DD_IAST_ENABLED=true
       - CTHULHU_URL
     volumes:
       - /var/run/datadog:/var/run/datadog
@@ -207,6 +225,9 @@ services:
       - DD_TRACE_SAMPLE_RATE=1
       - DD_PROFILING_ENABLED=true
       - DD_RUNTIME_METRICS_ENABLED=true
+      # Security stuff
+      - DD_APPSEC_ENABLED=true
+      - DD_IAST_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
@@ -231,6 +252,9 @@ services:
       - DD_LOGS_INJECTION=true
       - DD_TRACE_SAMPLE_RATE=1
       - DD_PROFILING_ENABLED=true
+      # Security stuff
+      - DD_APPSEC_ENABLED=true
+      - DD_IAST_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     depends_on:
@@ -274,6 +298,7 @@ services:
       - CART_SERVICE_TIMEOUT=5000
       # Security stuff
       - DD_APPSEC_ENABLED=true
+      - DD_IAST_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
@@ -294,7 +319,10 @@ services:
       - DISABLE_TRACING=1
       - DD_LOGS_INJECTION=true
       - DD_TRACE_SAMPLE_RATE=1
-      - DD_PROFILING_ENABLED=true
+      - DD_PROFILING_ENABLED=true 
+      # Security stuff
+      - DD_APPSEC_ENABLED=true
+      - DD_IAST_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
