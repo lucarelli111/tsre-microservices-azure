@@ -80,6 +80,7 @@ services:
       # Security stuff
       - DD_APPSEC_ENABLED=true
       - DD_IAST_ENABLED=true
+      - DD_APPSEC_SCA_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
@@ -99,6 +100,7 @@ services:
       # Security stuff
       - DD_APPSEC_ENABLED=true
       - DD_IAST_ENABLED=true
+      - DD_APPSEC_SCA_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
@@ -122,6 +124,7 @@ services:
       # Security stuff
       - DD_APPSEC_ENABLED=true
       - DD_IAST_ENABLED=true
+      - DD_APPSEC_SCA_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
@@ -142,6 +145,7 @@ services:
       # Security stuff
       - DD_APPSEC_ENABLED=true
       - DD_IAST_ENABLED=true
+      - DD_APPSEC_SCA_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
@@ -169,6 +173,7 @@ services:
       # Security stuff
       - DD_IAST_ENABLED=true
       - DD_APPSEC_ENABLED=true
+      - DD_APPSEC_SCA_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
@@ -204,6 +209,7 @@ services:
       # Security stuff
       - DD_IAST_ENABLED=true
       - DD_APPSEC_ENABLED=true
+      - DD_APPSEC_SCA_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     depends_on:
@@ -229,6 +235,7 @@ services:
       # Security stuff
       - DD_APPSEC_ENABLED=true
       - DD_IAST_ENABLED=true
+      - DD_APPSEC_SCA_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
@@ -256,6 +263,7 @@ services:
       # Security stuff
       - DD_APPSEC_ENABLED=true
       - DD_IAST_ENABLED=true
+      - DD_APPSEC_SCA_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     depends_on:
@@ -300,6 +308,7 @@ services:
       # Security stuff
       - DD_APPSEC_ENABLED=true
       - DD_IAST_ENABLED=true
+      - DD_APPSEC_SCA_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
@@ -324,6 +333,7 @@ services:
       # Security stuff
       - DD_APPSEC_ENABLED=true
       - DD_IAST_ENABLED=true
+      - DD_APPSEC_SCA_ENABLED=true
     volumes:
       - /var/run/datadog:/var/run/datadog
     labels:
