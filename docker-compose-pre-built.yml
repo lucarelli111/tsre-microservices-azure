@@ -175,11 +175,11 @@ services:
       com.datadoghq.ad.logs: '[{"source": "go", "service": "checkoutservice"}]'
     restart: unless-stopped
   paymentservice:
-    image: public.ecr.aws/v6x4t1k2/paymentservice:v0.7.1
+    image: public.ecr.aws/v6x4t1k2/paymentservice:v0.6.1
     environment:
       - DD_ENV=tsreenv
       - DD_SERVICE=paymentservice
-      - DD_VERSION=0.7.1
+      - DD_VERSION=0.6.1
       - DD_TRACE_AGENT_URL=unix:///var/run/datadog/apm.socket
       - PORT=9090
       - PAYMENT_DB_HOST=paymentdbservice
