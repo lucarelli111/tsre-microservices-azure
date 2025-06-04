@@ -205,7 +205,7 @@ services:
       - DD_PROFILING_ENABLED=true
       - DD_RUNTIME_METRICS_ENABLED=true
       - DD_APPSEC_ENABLED=true
-      - CTHULHU_URL
+      - CTHULHU_URL=${CTHULHU_URL}
       # Security stuff
       - DD_IAST_ENABLED=true
       - DD_APPSEC_ENABLED=true
