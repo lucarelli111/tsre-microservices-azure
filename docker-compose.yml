@@ -192,11 +192,11 @@ services:
   paymentservice:
     build:
       context: ./src/paymentservice
-    image: tsre/paymentservice:0.6.1
+    image: tsre/paymentservice:0.6.2
     environment:
       - DD_ENV=tsreenv
       - DD_SERVICE=paymentservice
-      - DD_VERSION=0.6.1
+      - DD_VERSION=0.6.2
       - DD_TRACE_AGENT_URL=unix:///var/run/datadog/apm.socket
       - PORT=9090
       - PAYMENT_DB_HOST=paymentdbservice
