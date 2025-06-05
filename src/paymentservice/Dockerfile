@@ -27,6 +27,6 @@ ENV DD_LOGS_INJECTION=true
 ENV JAVA_OPTS=-javaagent:dd-java-agent.jar
 
 WORKDIR /app
-ENTRYPOINT ["java","-jar","/app/paymentservice.jar"]
+ENTRYPOINT ["java","--add-opens","java.base/java.lang=ALL-UNNAMED","--add-opens","java.base/java.util=ALL-UNNAMED","-jar","/app/paymentservice.jar"]
 EXPOSE 9090
 EXPOSE 8881

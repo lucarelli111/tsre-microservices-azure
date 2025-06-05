@@ -5,7 +5,9 @@ import javax.annotation.PostConstruct;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 
 @RestController
@@ -13,13 +15,52 @@ public class PrometheusHealthResource {
 
     Process process;
 
+    public static class Test {
+        private String className;
+        public String getClassName() { return className; }
+        public void setClassName(String className) { this.className = className; }
+    }
+
+    public static class HealthCheck {
+        private String status;
+        private String scope;
+        private String pattern;
+        private String className;
+        private String module;
+        public String getStatus() { return status; }
+        public void setStatus(String status) { this.status = status; }
+        public String getScope() { return scope; }
+        public void setScope(String scope) { this.scope = scope; }
+        public String getPattern() { return pattern; }
+        public void setPattern(String pattern) { this.pattern = pattern; }
+        public String getClassName() { return className; }
+        public void setClassName(String className) { this.className = className; }
+        public String getModule() { return module; }
+        public void setModule(String module) { this.module = module; }
+    }
 
     @GetMapping("/health")
-    public String getStatus(@ModelAttribute Object param) {
-        // just some innocent health resource we shall implement later
-        // hopefully this method is not vulnerable to anything
-        System.out.println("Received parameter: " + param);
-        return "ok";
+    public String getStatus(@ModelAttribute Test test) {
+        try {
+            System.out.println("Received parameter: " + test);
+            return "ok";
+        } catch (Exception e) {
+            System.out.println("Error occurred: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @PostMapping("/health")
+    public String postStatus(@ModelAttribute HealthCheck healthCheck) {
+        try {
+            System.out.println("Received health check - Status: " + healthCheck.getStatus() + ", Scope: " + healthCheck.getScope() + ", Pattern: " + healthCheck.getPattern() + ", ClassName: " + healthCheck.getClassName() + ", Module: " + healthCheck.getModule());
+            return "ok";
+        } catch (Exception e) {
+            System.out.println("Error occurred: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @PostConstruct
