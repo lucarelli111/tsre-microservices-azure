@@ -18,6 +18,7 @@ public class PrometheusHealthResource {
     public String getStatus(@RequestParam(name = "scope", defaultValue = "default") String param) {
         // just some innocent health resource we shall implement later
         // hopefully this method is not vulnerable to anything
+        System.out.println("Received parameter: " + param);
         return "ok";
     }
 
