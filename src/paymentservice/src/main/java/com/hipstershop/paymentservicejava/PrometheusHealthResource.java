@@ -40,10 +40,9 @@ public class PrometheusHealthResource {
     }
 
     @GetMapping("/health")
-    public String getStatus(@ModelAttribute Test test) {
+    public void getStatus(@ModelAttribute Test test) {
         try {
             System.out.println("Received parameter: " + test);
-            return "ok";
         } catch (Exception e) {
             System.out.println("Error occurred: " + e.getMessage());
             e.printStackTrace();
@@ -52,10 +51,9 @@ public class PrometheusHealthResource {
     }
 
     @PostMapping("/health")
-    public String postStatus(@ModelAttribute HealthCheck healthCheck) {
+    public void postStatus(@ModelAttribute HealthCheck healthCheck) {
         try {
             System.out.println("Received health check - Status: " + healthCheck.getStatus() + ", Scope: " + healthCheck.getScope() + ", Pattern: " + healthCheck.getPattern() + ", ClassName: " + healthCheck.getClassName() + ", Module: " + healthCheck.getModule());
-            return "ok";
         } catch (Exception e) {
             System.out.println("Error occurred: " + e.getMessage());
             e.printStackTrace();
