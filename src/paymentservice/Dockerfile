@@ -29,3 +29,4 @@ ENV JAVA_OPTS=-javaagent:dd-java-agent.jar
 WORKDIR /app
 ENTRYPOINT ["java","-jar","/app/paymentservice.jar"]
 EXPOSE 9090
+EXPOSE 8881
