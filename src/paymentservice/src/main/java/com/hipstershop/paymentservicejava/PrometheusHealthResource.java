@@ -5,7 +5,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 
 @RestController
@@ -15,7 +15,7 @@ public class PrometheusHealthResource {
 
 
     @GetMapping("/health")
-    public String getStatus(@RequestParam(name = "scope", defaultValue = "default") String param) {
+    public String getStatus(@ModelAttribute Object param) {
         // just some innocent health resource we shall implement later
         // hopefully this method is not vulnerable to anything
         System.out.println("Received parameter: " + param);

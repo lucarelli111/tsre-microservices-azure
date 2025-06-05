@@ -214,7 +214,7 @@ services:
       - DD_IAST_ENABLED=true
       - DD_APPSEC_SCA_ENABLED=true
     ports:
-      - "9090:9090/tcp"
+      - "8881:8881/tcp"
     volumes:
       - /var/run/datadog:/var/run/datadog
     depends_on:
