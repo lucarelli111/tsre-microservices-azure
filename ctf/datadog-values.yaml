@@ -43,6 +43,8 @@ datadog:
   logs:
     enabled: true
     containerCollectAll: true
+  logs_config:
+    auto_multi_line_detection: true
 
   ## Collect kubernetes events
   collectEvents: true
