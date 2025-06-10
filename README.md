@@ -11,15 +11,9 @@
 
 **Swagstore** is a fork of [Google Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo) which in turn is a cloud-first microservices demo application.
 
-The app consists of an 11-tier microservices application. The application is a
-web-based e-commerce app where users can browse items,
-add them to the cart, and purchase them.
-It is a ficticious ecommerce swag store, don't expect to receive swags :grinning:
+The app consists of an 12-tier microservices application. The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them.
 
-**Google uses this application to demonstrate use of technologies like
-Kubernetes/GKE, Istio, Stackdriver, and gRPC**. This application
-works on any Kubernetes cluster, as well as Google
-Kubernetes Engine. It’s **easy to deploy with little to no configuration**.
+It is a ficticious ecommerce swagstore, don't expect to receive swags :grinning:
 
 **At Datadog we use the app to experiment with APM, Tracing Libraries, Admission Controller and auto injection.
 It is perfect as a playground if you want to play and instrument the microservices written in multiple languages.**
@@ -28,12 +22,7 @@ If you’re using this demo, please **★Star** this repository to show your int
 
 
 
-
 ## Features
-
-- **[Kubernetes](https://kubernetes.io)/[GKE](https://cloud.google.com/kubernetes-engine/):**
-  The app is designed to run on Kubernetes (both locally on "Docker for
-  Desktop", as well as on the cloud with GKE).
 - **[gRPC](https://grpc.io):** Microservices use a high volume of gRPC calls to
   communicate to each other.
 - **[Istio](https://istio.io):** Application works on Istio service mesh.
@@ -53,125 +42,14 @@ If you’re using this demo, please **★Star** this repository to show your int
 
 Do you have a running K8s cluster? If not either use Docker Desktop or Minikube or Kind or your K8s cluster or your GKE
 
-Don't forget to install Git, Skaffold 2.0+ and kubectl. Check the prerequisites section above.
+Don't forget to install Git. Check the prerequisites section above.
 
-Launch a local Kubernetes cluster with one of the following tools:
+Launch a local instance with one of the following commands:
+1. Build the applications: docker-compose build 
+2. Start the application: docker-compose up -d
 
-## Option 1 - Local Cluster 
+The frontend service shall come up on localhost:80
 
-1. Launch a local Kubernetes cluster with one of the following tools:
-
-    - To launch **Minikube** (tested with Ubuntu Linux). Please, ensure that the
-       local Kubernetes cluster has at least:
-        - 4 CPUs
-        - 4.0 GiB memory
-        - 32 GB disk space
-
-      ```shell
-      minikube start --cpus=4 --memory 4096 --disk-size 32g
-      ```
-
-    - To launch **Docker for Desktop** (tested with Mac/Windows). Go to Preferences:
-        - choose “Enable Kubernetes”,
-        - set CPUs to at least 3, and Memory to at least 6.0 GiB
-        - on the "Disk" tab, set at least 32 GB disk space
-
-    - To launch a **Kind** cluster:
-
-      ```shell
-      kind create cluster
-      ```
-
-2. Run `kubectl get nodes` to verify you're connected to the respective control plane.
-
-3. Run `skaffold run` (first time will be slow, it can take ~20 minutes).
-   This will build and deploy the application. If you need to rebuild the images
-   automatically as you refactor the code, run `skaffold dev` command.
-   
-   
-	**change the platform accordingly**
-	
-	**change the default-repo to point to your personal hub account
-	if you want to use your own images or you can use mine**
-	
-	if you are on Mac M1 or M2 or you are on arm use the --platform accordingly
-
-	  `skaffold run --default-repo docker.io/smazzone --platform=linux/arm64`
-	
-	if you are on a PC or an Intel-based Mac or you are on amd use the --platform accordingly
-  
-    `skaffold run --default-repo docker.io/smazzone --platform=linux/amd64`
-   
-
-4. Run `kubectl get pods` to verify the Pods are ready and running.
-
-5. Docker Desktop should automatically provide the frontend at http://localhost:80
-6. Minikube requires you to run a command to access the frontend service:
-`minikube service frontend-external`
-7. Kind does not provision an IP address for the service. You must run a port-forwarding process to access the frontend at http://localhost:8080:
-`kubectl port-forward deployment/frontend 8080:8080` to forward a port to the frontend service.
-9. Navigate to either http://localhost:80 or http://localhost:8080 to access the web frontend.
-
-
-## Cleanup
-
-If you've deployed the application with `skaffold run` command, you can run
-`skaffold delete` to clean up the deployed resources.
-
-  
-## Option 2: Google Kubernetes Engine (GKE)
-
-> 💡 Recommended if you're using Google Cloud Platform and want to try it on
-> a realistic cluster. **Note**: If your cluster has Workload Identity enabled, 
-> [see these instructions](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#enable)
-
-1.  Create a Google Kubernetes Engine cluster and make sure `kubectl` is pointing
-    to the cluster.
-
-    ```sh
-    gcloud services enable container.googleapis.com
-    ```
-
-    ```sh
-    gcloud container clusters create demo --enable-autoupgrade \
-        --enable-autoscaling --min-nodes=3 --max-nodes=10 --num-nodes=5 --zone=us-central1-a
-    ```
-
-    ```
-    kubectl get nodes
-    ```
-
-2.  Enable Google Container Registry (GCR) on your GCP project and configure the
-    `docker` CLI to authenticate to GCR:
-
-    ```sh
-    gcloud services enable containerregistry.googleapis.com
-    ```
-
-    ```sh
-    gcloud auth configure-docker -q
-    ```
-
-3.  In the root of this repository, run `skaffold run --default-repo=gcr.io/[PROJECT_ID]`,
-    where [PROJECT_ID] is your GCP project ID.
-
-    This command:
-
-    - builds the container images
-    - pushes them to GCR
-    - applies the `./kubernetes-manifests` deploying the application to
-      Kubernetes.
-
-    **Troubleshooting:** If you get "No space left on device" error on Google
-    Cloud Shell, you can build the images on Google Cloud Build: [Enable the
-    Cloud Build
-    API](https://console.cloud.google.com/flows/enableapi?apiid=cloudbuild.googleapis.com),
-    then run `skaffold run -p gcb --default-repo=gcr.io/[PROJECT_ID]` instead.
-
-4.  Find the IP address of your application, then visit the application on your
-    browser to confirm installation.
-
-        kubectl get service frontend-external
 
 ## Local Development
 
@@ -195,7 +73,7 @@ It is a fictitious e-commerce swag store, don't expect to receive swags :grinnin
 
 ## Architecture
 
-The application is running on a single node kubernetes cluster using minikube
+The application is running in docker.
 
 [![Architecture of
 microservices](./ctf/static/arch.png)](./ctf/static/arch.png)
@@ -225,31 +103,21 @@ The Datadog Cluster Agent configuration is located in `ctf/datadog-values.yaml`.
 > **Note:** If you are running the Datadog Cluster Agent locally (e.g., via Docker) or on Google Cloud, ensure that certain settings, such as `datadog.networkMonitoring.enabled`, are disabled.
 
 ### Running the Application
-All service configuration files are available in the `kubernetes-manifests` directory.
+All service configurations are available in the `docker-compose.yml` file.
 
 If using the [TSRE Terraform Script](https://github.com/DataDog/trse-terraform), the application will be started automatically using `start.sh`.
-
-For TSRE challenges requiring updates to the `paymentservice` and `frontend` codebase, use the `update.sh` script to reload the changes.
 
 If you are running TSRE Microservices locally or not using the [TSRE Terraform Script](https://github.com/DataDog/trse-terraform), run the following commands from the `tsre-microservices` repository to start the services:
 
 ```bash
-# Deploy services with pre-built images from AWS Public Registry:
-kubectl apply -f kubernetes-manifests/adservice.yaml
-kubectl apply -f kubernetes-manifests/cartservice.yaml
-kubectl apply -f kubernetes-manifests/checkoutservice.yaml
-kubectl apply -f kubernetes-manifests/currencyservice.yaml
-kubectl apply -f kubernetes-manifests/emailservice.yaml
-kubectl apply -f kubernetes-manifests/loadgenerator.yaml
-kubectl apply -f kubernetes-manifests/paymentdbservice.yaml
-kubectl apply -f kubernetes-manifests/productcatalogservice.yaml
-kubectl apply -f kubernetes-manifests/recommendationservice.yaml
-kubectl apply -f kubernetes-manifests/redis.yaml
-kubectl apply -f kubernetes-manifests/shippingservice.yaml
+docker-compose build 
+docker-compose up -d
+```
 
-# Deploy paymentservice and frontend (services not pre-built):
-skaffold build
-skaffold run
+If you want to run the pre-built images, run the following commands:
+```bash 
+docker-compose -f docker-compose-pre-built.yml build 
+docker-compose -f docker-compose-pre-built.yml up -d
 ```
 
 ### Rebuilding the Services
