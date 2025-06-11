@@ -1,68 +1,51 @@
-
-
 <p align="center">
 <img src="src/frontend/static/icons/Swagstore-Logo.svg" width="300" alt="Swagstore" />
 </p>
 
-<!-- 
-## Release 0.5.0 - multiarch (amd and arm support)
-## Dec 2022
-
-
-**Swagstore** is a fork of [Google Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo) which in turn is a cloud-first microservices demo application.
-
-The app consists of an 12-tier microservices application. The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them.
-
-It is a ficticious ecommerce swagstore, don't expect to receive swags :grinning:
-
-**At Datadog we use the app to experiment with APM, Tracing Libraries, Admission Controller and auto injection.
-It is perfect as a playground if you want to play and instrument the microservices written in multiple languages.**
-
-If you’re using this demo, please **★Star** this repository to show your interest!
-
-
-
-## Features
-- **[gRPC](https://grpc.io):** Microservices use a high volume of gRPC calls to
-  communicate to each other.
-- **[Istio](https://istio.io):** Application works on Istio service mesh.
-- **[Cloud Operations (Stackdriver)](https://cloud.google.com/products/operations):** Many services
-  are instrumented with **Profiling**, **Tracing** and **Debugging**. In
-  addition to these, using Istio enables features like Request/Response
-  **Metrics** and **Context Graph** out of the box. When it is running out of
-  Google Cloud, this code path remains inactive.
-- **[Skaffold](https://skaffold.dev):** Application
-  is deployed to Kubernetes with a single command using Skaffold.
-- **Synthetic Load Generation:** The application demo comes with a background
-  job that creates realistic usage patterns on the website using
-  [Locust](https://locust.io/) load generator.
-  
-  
-## Deploy Swagstore Demo app
-
-Do you have a running K8s cluster? If not either use Docker Desktop or Minikube or Kind or your K8s cluster or your GKE
-
-Don't forget to install Git. Check the prerequisites section above.
-
-Launch a local instance with one of the following commands:
-1. Build the applications: docker-compose build 
-2. Start the application: docker-compose up -d
-
-The frontend service shall come up on localhost:80
-
-
-## Local Development
-
-If you would like to contribute features or fixes to this app, see the [Development Guide](/docs/development-guide.md) on how to build this demo locally.
-
----
--->
-
 # DPN Tears of SRE Microservices - Swagstore
 
-The Swagstore app consists of an 12-tier microservices application. The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them.
+The Swagstore app consists of a 12-tier microservices application. The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them.
 
 It is a fictitious e-commerce swag store, don't expect to receive swags :grinning:
+
+## Table of Contents
+
+- [Quick Start](#quick-start)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Architecture](#architecture)
+- [How to Use](#how-to-use)
+- [Rebuilding Services](#rebuilding-the-services)
+- [About](#about)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Quick Start
+
+To run the application locally:
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd tsre-microservices
+
+# Build and start all services
+docker-compose build 
+docker-compose up -d
+```
+
+The frontend will be available at [http://localhost](http://localhost).
+
+## Features
+- **[gRPC](https://grpc.io):** Microservices use a high volume of gRPC calls to communicate to each other.
+- **[Istio](https://istio.io):** Application works on Istio service mesh.
+- **[Cloud Operations (Stackdriver)](https://cloud.google.com/products/operations):** Many services are instrumented with **Profiling**, **Tracing** and **Debugging**. In addition to these, using Istio enables features like Request/Response **Metrics** and **Context Graph** out of the box. When it is running out of Google Cloud, this code path remains inactive.
+- **[Skaffold](https://skaffold.dev):** Application is deployed to Kubernetes with a single command using Skaffold.
+- **Synthetic Load Generation:** The application demo comes with a background job that creates realistic usage patterns on the website using [Locust](https://locust.io/) load generator.
+
+**At Datadog we use the app to experiment with APM, Tracing Libraries, Admission Controller and auto injection. It is perfect as a playground if you want to play and instrument the microservices written in multiple languages.**
+
+If you're using this demo, please **★Star** this repository to show your interest!
 
 ## Screenshots
 
@@ -86,7 +69,7 @@ microservices](./ctf/static/arch.png)](./ctf/static/arch.png)
 | [productcatalogservice](./src/productcatalogservice) | Go            | Provides the list of products from a JSON file and ability to search products and get individual products.                        |
 | [currencyservice](./src/currencyservice)             | Node.js       | Converts one money amount to another currency. Uses real values fetched from European Central Bank. It's the highest QPS service. |
 | [paymentservice](./src/paymentservice)               | Java          | Charges the given credit card info (mock) with the given amount and returns a transaction ID.                                     |
-| [paymentdbservice](./src/paymentdbservice)               | MariaDB | Store all charges and payment information according to a transaction ID.   
+| [paymentdbservice](./src/paymentdbservice)           | MariaDB       | Stores all charges and payment information according to a transaction ID.                                                         |
 | [shippingservice](./src/shippingservice)             | Go            | Gives shipping cost estimates based on the shopping cart. Ships items to the given address (mock)                                 |
 | [emailservice](./src/emailservice)                   | Python        | Sends users an order confirmation email (mock).                                                                                   |
 | [checkoutservice](./src/checkoutservice)             | Go            | Retrieves user cart, prepares order and orchestrates the payment, shipping and the email notification.                            |
@@ -120,7 +103,7 @@ docker-compose -f docker-compose-pre-built.yml build
 docker-compose -f docker-compose-pre-built.yml up -d
 ```
 
-### Rebuilding the Services
+## Rebuilding the Services
 
 To rebuild services after making code changes in the `src` directory:
 
@@ -147,6 +130,14 @@ docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k
 
 4. Update the `spec.template.spec.containers.image` in the respective `tsre-microservices/ctf/<servicename>.yaml` file with the appropriate tag.
 
-## Misc
+## About
 
-**Swagstore** is a heavily modified version from the original [Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo). In fact, items on the Swagstore are actually Datadog swags.
+**Swagstore** is a heavily modified version of the original [Google Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo), specifically adapted for Datadog's experimentation with APM, tracing libraries, and microservices instrumentation. The items featured in the Swagstore are actually Datadog swag items.
+
+## Contributing
+
+If you would like to contribute features or fixes to this app, please see the development guidelines and submit a pull request.
+
+## License
+
+This project is based on Google's Online Boutique demo application.
