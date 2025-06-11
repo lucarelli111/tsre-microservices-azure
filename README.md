@@ -11,6 +11,7 @@ It is a fictitious e-commerce swag store, don't expect to receive swags :grinnin
 ## Table of Contents
 
 - [Quick Start](#quick-start)
+- [Environment Variables](#environment-variables)
 - [Features](#features)
 - [Screenshots](#screenshots)
 - [Architecture](#architecture)
@@ -35,6 +36,49 @@ docker-compose up -d
 ```
 
 The frontend will be available at [http://localhost](http://localhost).
+
+## Environment Variables
+
+The following environment variables are required to run the application:
+
+### Required Variables
+
+| Variable | Description |
+|----------|-------------|---------|
+| `DD_API_KEY` | Your Datadog API key for monitoring and observability |
+| `DD_APP_KEY` | Your Datadog Application key (required for loggenerator service) |
+
+### Optional Variables
+
+| Variable | Description | Default Value |
+|----------|-------------|---------------|
+| `CTHULHU_URL` | Optional URL for Cthulhu integration in payment service | Not set |
+| `DD_ENV` | Environment name for Datadog | `tsreenv` |
+| `DD_SITE` | Datadog site URL | `datadoghq.com` |
+
+### Setting Environment Variables
+
+You can set environment variables in several ways:
+
+1. **Using a `.env` file** (recommended for local development):
+   ```bash
+   # Create a .env file in the project root
+   echo "DD_API_KEY=your_api_key_here" > .env
+   echo "DD_APP_KEY=your_app_key_here" >> .env
+   ```
+
+2. **Using environment variable exports**:
+   ```bash
+   export DD_API_KEY=your_api_key_here
+   export DD_APP_KEY=your_app_key_here
+   ```
+
+3. **Inline with docker-compose**:
+   ```bash
+   DD_API_KEY=your_api_key_here DD_APP_KEY=your_app_key_here docker-compose up -d
+   ```
+
+**Note:** The Datadog API and Application keys are required for proper monitoring and observability features. You can obtain these keys from your [Datadog account settings](https://app.datadoghq.com/organization-settings/api-keys).
 
 ## Features
 - **[gRPC](https://grpc.io):** Microservices use a high volume of gRPC calls to communicate to each other.
