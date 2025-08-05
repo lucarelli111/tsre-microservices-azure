@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM python:slim@sha256:49749648f4426b31b20fca55ad854caa55ff59dc604f2f76b57d814e0a47c181 as base
+#FROM --platform=$BUILDPLATFORM python:slim@sha256:49749648f4426b31b20fca55ad854caa55ff59dc604f2f76b57d814e0a47c181 as base
 
-#FROM --platform=$BUILDPLATFORM python:3.10.8-slim as base
+FROM --platform=$BUILDPLATFORM python:3.10.8-slim as base
 #FROM --platform=linux/amd64 python:3.10.8-slim as base
 
 FROM base as builder
@@ -46,8 +46,6 @@ RUN pip install -r requirements.txt
 FROM base as without-grpc-health-probe-bin
 # Enable unbuffered logging
 ENV PYTHONUNBUFFERED=1
-# Enable Profiler
-ENV ENABLE_PROFILER=1
 
 WORKDIR /email_server
 

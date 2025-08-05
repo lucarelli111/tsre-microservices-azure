@@ -58,7 +58,11 @@ func init() {
 }
 
 func main() {
-	tracer.Start(tracer.WithRuntimeMetrics())
+	tracer.Start(
+		tracer.WithRuntimeMetrics(),
+		tracer.WithLogStartup(false),
+		tracer.WithDebugMode(false),
+	)
 	defer tracer.Stop()
 	err := profiler.Start(
 		profiler.WithProfileTypes(
@@ -72,25 +76,12 @@ func main() {
 			// profiler.MutexProfile,
 			// profiler.GoroutineProfile,
 		),
+		profiler.WithLogStartup(false),  // Disable the startup log
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer profiler.Stop()
-	if os.Getenv("DISABLE_TRACING") == "" {
-		log.Info("Tracing enabled, but temporarily unavailable")
-		log.Info("See https://github.com/GoogleCloudPlatform/microservices-demo/issues/422 for more info.")
-		go initTracing()
-	} else {
-		log.Info("Tracing disabled.")
-	}
-
-	if os.Getenv("DISABLE_PROFILER") == "" {
-		log.Info("Profiling enabled.")
-		go initProfiling("shippingservice", "1.0.0")
-	} else {
-		log.Info("Profiling disabled.")
-	}
 
 	port := defaultPort
 	if value, ok := os.LookupEnv("PORT"); ok {

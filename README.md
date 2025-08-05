@@ -1,204 +1,138 @@
-
-
 <p align="center">
 <img src="src/frontend/static/icons/Swagstore-Logo.svg" width="300" alt="Swagstore" />
 </p>
 
-<!-- 
-## Release 0.5.0 - multiarch (amd and arm support)
-## Dec 2022
-
-
-**Swagstore** is a fork of [Google Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo) which in turn is a cloud-first microservices demo application.
-
-The app consists of an 11-tier microservices application. The application is a
-web-based e-commerce app where users can browse items,
-add them to the cart, and purchase them.
-It is a ficticious ecommerce swag store, don't expect to receive swags :grinning:
-
-**Google uses this application to demonstrate use of technologies like
-Kubernetes/GKE, Istio, Stackdriver, and gRPC**. This application
-works on any Kubernetes cluster, as well as Google
-Kubernetes Engine. It’s **easy to deploy with little to no configuration**.
-
-**At Datadog we use the app to experiment with APM, Tracing Libraries, Admission Controller and auto injection.
-It is perfect as a playground if you want to play and instrument the microservices written in multiple languages.**
-
-If you’re using this demo, please **★Star** this repository to show your interest!
-
-
-
-
-## Features
-
-- **[Kubernetes](https://kubernetes.io)/[GKE](https://cloud.google.com/kubernetes-engine/):**
-  The app is designed to run on Kubernetes (both locally on "Docker for
-  Desktop", as well as on the cloud with GKE).
-- **[gRPC](https://grpc.io):** Microservices use a high volume of gRPC calls to
-  communicate to each other.
-- **[Istio](https://istio.io):** Application works on Istio service mesh.
-- **[Cloud Operations (Stackdriver)](https://cloud.google.com/products/operations):** Many services
-  are instrumented with **Profiling**, **Tracing** and **Debugging**. In
-  addition to these, using Istio enables features like Request/Response
-  **Metrics** and **Context Graph** out of the box. When it is running out of
-  Google Cloud, this code path remains inactive.
-- **[Skaffold](https://skaffold.dev):** Application
-  is deployed to Kubernetes with a single command using Skaffold.
-- **Synthetic Load Generation:** The application demo comes with a background
-  job that creates realistic usage patterns on the website using
-  [Locust](https://locust.io/) load generator.
-  
-  
-## Deploy Swagstore Demo app
-
-Do you have a running K8s cluster? If not either use Docker Desktop or Minikube or Kind or your K8s cluster or your GKE
-
-Don't forget to install Git, Skaffold 2.0+ and kubectl. Check the prerequisites section above.
-
-Launch a local Kubernetes cluster with one of the following tools:
-
-## Option 1 - Local Cluster 
-
-1. Launch a local Kubernetes cluster with one of the following tools:
-
-    - To launch **Minikube** (tested with Ubuntu Linux). Please, ensure that the
-       local Kubernetes cluster has at least:
-        - 4 CPUs
-        - 4.0 GiB memory
-        - 32 GB disk space
-
-      ```shell
-      minikube start --cpus=4 --memory 4096 --disk-size 32g
-      ```
-
-    - To launch **Docker for Desktop** (tested with Mac/Windows). Go to Preferences:
-        - choose “Enable Kubernetes”,
-        - set CPUs to at least 3, and Memory to at least 6.0 GiB
-        - on the "Disk" tab, set at least 32 GB disk space
-
-    - To launch a **Kind** cluster:
-
-      ```shell
-      kind create cluster
-      ```
-
-2. Run `kubectl get nodes` to verify you're connected to the respective control plane.
-
-3. Run `skaffold run` (first time will be slow, it can take ~20 minutes).
-   This will build and deploy the application. If you need to rebuild the images
-   automatically as you refactor the code, run `skaffold dev` command.
-   
-   
-	**change the platform accordingly**
-	
-	**change the default-repo to point to your personal hub account
-	if you want to use your own images or you can use mine**
-	
-	if you are on Mac M1 or M2 or you are on arm use the --platform accordingly
-
-	  `skaffold run --default-repo docker.io/smazzone --platform=linux/arm64`
-	
-	if you are on a PC or an Intel-based Mac or you are on amd use the --platform accordingly
-  
-    `skaffold run --default-repo docker.io/smazzone --platform=linux/amd64`
-   
-
-4. Run `kubectl get pods` to verify the Pods are ready and running.
-
-5. Docker Desktop should automatically provide the frontend at http://localhost:80
-6. Minikube requires you to run a command to access the frontend service:
-`minikube service frontend-external`
-7. Kind does not provision an IP address for the service. You must run a port-forwarding process to access the frontend at http://localhost:8080:
-`kubectl port-forward deployment/frontend 8080:8080` to forward a port to the frontend service.
-9. Navigate to either http://localhost:80 or http://localhost:8080 to access the web frontend.
-
-
-## Cleanup
-
-If you've deployed the application with `skaffold run` command, you can run
-`skaffold delete` to clean up the deployed resources.
-
-  
-## Option 2: Google Kubernetes Engine (GKE)
-
-> 💡 Recommended if you're using Google Cloud Platform and want to try it on
-> a realistic cluster. **Note**: If your cluster has Workload Identity enabled, 
-> [see these instructions](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#enable)
-
-1.  Create a Google Kubernetes Engine cluster and make sure `kubectl` is pointing
-    to the cluster.
-
-    ```sh
-    gcloud services enable container.googleapis.com
-    ```
-
-    ```sh
-    gcloud container clusters create demo --enable-autoupgrade \
-        --enable-autoscaling --min-nodes=3 --max-nodes=10 --num-nodes=5 --zone=us-central1-a
-    ```
-
-    ```
-    kubectl get nodes
-    ```
-
-2.  Enable Google Container Registry (GCR) on your GCP project and configure the
-    `docker` CLI to authenticate to GCR:
-
-    ```sh
-    gcloud services enable containerregistry.googleapis.com
-    ```
-
-    ```sh
-    gcloud auth configure-docker -q
-    ```
-
-3.  In the root of this repository, run `skaffold run --default-repo=gcr.io/[PROJECT_ID]`,
-    where [PROJECT_ID] is your GCP project ID.
-
-    This command:
-
-    - builds the container images
-    - pushes them to GCR
-    - applies the `./kubernetes-manifests` deploying the application to
-      Kubernetes.
-
-    **Troubleshooting:** If you get "No space left on device" error on Google
-    Cloud Shell, you can build the images on Google Cloud Build: [Enable the
-    Cloud Build
-    API](https://console.cloud.google.com/flows/enableapi?apiid=cloudbuild.googleapis.com),
-    then run `skaffold run -p gcb --default-repo=gcr.io/[PROJECT_ID]` instead.
-
-4.  Find the IP address of your application, then visit the application on your
-    browser to confirm installation.
-
-        kubectl get service frontend-external
-
-## Local Development
-
-If you would like to contribute features or fixes to this app, see the [Development Guide](/docs/development-guide.md) on how to build this demo locally.
-
----
--->
-
 # DPN Tears of SRE Microservices - Swagstore
 
-The Swagstore app consists of an 12-tier microservices application. The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them.
+The Swagstore app consists of a 12-tier microservices application. The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them.
 
 It is a fictitious e-commerce swag store, don't expect to receive swags :grinning:
+
+## Table of Contents
+
+- [Quick Start](#quick-start)
+- [Environment Variables](#environment-variables)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Architecture](#architecture)
+- [How to Use](#how-to-use)
+- [Rebuilding Services](#rebuilding-the-services)
+- [About](#about)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Quick Start
+
+### Prerequisites
+
+**Auto-instrumentation Setup Required**: To get all applications to report data to Datadog, an auto-instrumentation step is required for both local Docker and production deployments.
+
+**⚠️ macOS Compatibility**: Auto-instrumentation is currently **not compatible with macOS Docker**. macOS users should use alternative monitoring setups.
+
+### Step 1: Auto-instrumentation Installation
+
+**Note:** We tested this on a Linux platform. For other platforms or the latest auto-instrumentation commands, refer to [this page](https://app.datadoghq.com/fleet/install-agent/latest).
+
+```bash
+DD_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
+DD_SITE="datadoghq.com" \
+DD_APM_INSTRUMENTATION_ENABLED=host \
+DD_REMOTE_UPDATES=true \
+DD_RUNTIME_SECURITY_CONFIG_ENABLED=true \
+DD_SBOM_CONTAINER_IMAGE_ENABLED=true \
+DD_SBOM_HOST_ENABLED=true \
+DD_ENV=tsreenv \
+DD_APM_INSTRUMENTATION_LIBRARIES=java:1,python:3,js:5,php:1,dotnet:3,ruby:2 \
+bash -c "$(curl -L https://install.datadoghq.com/scripts/install_script_agent7.sh)"
+```
+
+### Step 2: Run the Application (Docker)
+
+After completing the auto-instrumentation setup above:
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd tsre-microservices
+
+# Set required environment variables
+export DD_API_KEY=your_datadog_api_key_here
+export DD_APP_KEY=your_datadog_app_key_here
+
+# Build and start all services
+docker-compose build 
+docker-compose up -d
+```
+
+The frontend will be available at [http://localhost](http://localhost).
+
+## Environment Variables
+
+The following environment variables are required to run the application:
+
+### Required Variables
+
+| Variable | Description |
+|----------|-------------|
+| `DD_API_KEY` | Your Datadog API key for monitoring and observability |
+| `DD_APP_KEY` | Your Datadog Application key (required for loggenerator service) |
+
+### Optional Variables
+
+| Variable | Description | Default Value |
+|----------|-------------|---------------|
+| `CTHULHU_URL` | Optional URL for Cthulhu integration in payment service | Not set |
+| `DD_ENV` | Environment name for Datadog | `tsreenv` |
+| `DD_SITE` | Datadog site URL | `datadoghq.com` |
+
+### Setting Environment Variables
+
+You can set environment variables in several ways:
+
+1. **Using a `.env` file** (recommended for local development):
+   ```bash
+   # Create a .env file in the project root
+   echo "DD_API_KEY=your_api_key_here" > .env
+   echo "DD_APP_KEY=your_app_key_here" >> .env
+   ```
+
+2. **Using environment variable exports**:
+   ```bash
+   export DD_API_KEY=your_api_key_here
+   export DD_APP_KEY=your_app_key_here
+   ```
+
+3. **Inline with docker-compose**:
+   ```bash
+   DD_API_KEY=your_api_key_here DD_APP_KEY=your_app_key_here docker-compose up -d
+   ```
+
+**Note:** The Datadog API and Application keys are required for proper monitoring and observability features. You can obtain these keys from your [Datadog account settings](https://app.datadoghq.com/organization-settings/api-keys).
+
+## Features
+- **[gRPC](https://grpc.io):** Microservices use a high volume of gRPC calls to communicate to each other.
+- **[Istio](https://istio.io):** Application works on Istio service mesh.
+- **[Cloud Operations (Stackdriver)](https://cloud.google.com/products/operations):** Many services are instrumented with **Profiling**, **Tracing** and **Debugging**. In addition to these, using Istio enables features like Request/Response **Metrics** and **Context Graph** out of the box. When it is running out of Google Cloud, this code path remains inactive.
+- **[Skaffold](https://skaffold.dev):** Application is deployed to Kubernetes with a single command using Skaffold.
+- **Synthetic Load Generation:** The application demo comes with a background job that creates realistic usage patterns on the website using [Locust](https://locust.io/) load generator.
+
+**At Datadog we use the app to experiment with APM, Tracing Libraries, Admission Controller and auto injection. It is perfect as a playground if you want to play and instrument the microservices written in multiple languages.**
+
+If you're using this demo, please **★Star** this repository to show your interest!
 
 ## Screenshots
 
 | Home Page                                                                                                         | Checkout Screen                                                                                                    |
 | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| [![Screenshot of store homepage](./ctf/static/online-boutique-frontend-1.png)](./ctf/static/online-boutique-frontend-1.png) | [![Screenshot of checkout screen](./ctf/static/online-boutique-frontend-2.png)](./ctf/static/online-boutique-frontend-2.png) |
+| [![Screenshot of store homepage](./docs/img/online-boutique-frontend-1.png)](./docs/img/online-boutique-frontend-1.png) | [![Screenshot of checkout screen](./docs/img/online-boutique-frontend-2.png)](./docs/img/online-boutique-frontend-2.png) |
 
 
 ## Architecture
 
-The application is running on a single node kubernetes cluster using minikube
+The application is running in docker.
 
 [![Architecture of
-microservices](./ctf/static/arch.png)](./ctf/static/arch.png)
+microservices](./docs/img/arch.png)](./docs/img/arch.png)
 
 
 | Service                                              | Language      | Description                                                                                                                       |
@@ -208,7 +142,7 @@ microservices](./ctf/static/arch.png)](./ctf/static/arch.png)
 | [productcatalogservice](./src/productcatalogservice) | Go            | Provides the list of products from a JSON file and ability to search products and get individual products.                        |
 | [currencyservice](./src/currencyservice)             | Node.js       | Converts one money amount to another currency. Uses real values fetched from European Central Bank. It's the highest QPS service. |
 | [paymentservice](./src/paymentservice)               | Java          | Charges the given credit card info (mock) with the given amount and returns a transaction ID.                                     |
-| [paymentdbservice](./src/paymentdbservice)               | MariaDB | Store all charges and payment information according to a transaction ID.   
+| [paymentdbservice](./src/paymentdbservice)           | MariaDB       | Stores all charges and payment information according to a transaction ID.                                                         |
 | [shippingservice](./src/shippingservice)             | Go            | Gives shipping cost estimates based on the shopping cart. Ships items to the given address (mock)                                 |
 | [emailservice](./src/emailservice)                   | Python        | Sends users an order confirmation email (mock).                                                                                   |
 | [checkoutservice](./src/checkoutservice)             | Go            | Retrieves user cart, prepares order and orchestrates the payment, shipping and the email notification.                            |
@@ -219,40 +153,39 @@ microservices](./ctf/static/arch.png)](./ctf/static/arch.png)
 
 ## How to Use
 
-### Datadog Agent
-The Datadog Cluster Agent configuration is located in `ctf/datadog-values.yaml`.
+### Alternative Deployment Methods
+
+#### Using TSRE Terraform Script
+If using the [TSRE Terraform Script](https://github.com/DataDog/trse-terraform), the application will be started automatically using `start.sh`.
 
 > **Note:** If you are running the Datadog Cluster Agent locally (e.g., via Docker) or on Google Cloud, ensure that certain settings, such as `datadog.networkMonitoring.enabled`, are disabled.
 
-### Running the Application
-All service configuration files are available in the `kubernetes-manifests` directory.
+#### Service Configuration
+All service configurations are available in the `docker-compose.yml` file. You can modify individual service settings by editing the environment variables in this file.
 
-If using the [TSRE Terraform Script](https://github.com/DataDog/trse-terraform), the application will be started automatically using `start.sh`.
+### Troubleshooting
 
-For TSRE challenges requiring updates to the `paymentservice` and `frontend` codebase, use the `update.sh` script to reload the changes.
+#### Common Issues
+- **Services not starting**: Ensure all required environment variables are set (see [Environment Variables](#environment-variables) section)
+- **No data in Datadog**: Verify that auto-instrumentation was completed successfully before starting Docker services
+- **macOS compatibility**: Auto-instrumentation is not compatible with macOS Docker - use alternative monitoring setups
 
-If you are running TSRE Microservices locally or not using the [TSRE Terraform Script](https://github.com/DataDog/trse-terraform), run the following commands from the `tsre-microservices` repository to start the services:
+#### Accessing Services
+- **Frontend**: [http://localhost](http://localhost)
+- **Individual services**: Check the `docker-compose.yml` file for specific port mappings
 
+#### Logs
+To view logs for all services:
 ```bash
-# Deploy services with pre-built images from AWS Public Registry:
-kubectl apply -f kubernetes-manifests/adservice.yaml
-kubectl apply -f kubernetes-manifests/cartservice.yaml
-kubectl apply -f kubernetes-manifests/checkoutservice.yaml
-kubectl apply -f kubernetes-manifests/currencyservice.yaml
-kubectl apply -f kubernetes-manifests/emailservice.yaml
-kubectl apply -f kubernetes-manifests/loadgenerator.yaml
-kubectl apply -f kubernetes-manifests/paymentdbservice.yaml
-kubectl apply -f kubernetes-manifests/productcatalogservice.yaml
-kubectl apply -f kubernetes-manifests/recommendationservice.yaml
-kubectl apply -f kubernetes-manifests/redis.yaml
-kubectl apply -f kubernetes-manifests/shippingservice.yaml
-
-# Deploy paymentservice and frontend (services not pre-built):
-skaffold build
-skaffold run
+docker-compose logs -f
 ```
 
-### Rebuilding the Services
+To view logs for a specific service:
+```bash
+docker-compose logs -f <service-name>
+```
+
+## Rebuilding the Services
 
 To rebuild services after making code changes in the `src` directory:
 
@@ -279,6 +212,14 @@ docker buildx build --platform linux/amd64,linux/arm64 -t public.ecr.aws/v6x4t1k
 
 4. Update the `spec.template.spec.containers.image` in the respective `tsre-microservices/ctf/<servicename>.yaml` file with the appropriate tag.
 
-## Misc
+## About
 
-**Swagstore** is a heavily modified version from the original [Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo). In fact, items on the Swagstore are actually Datadog swags.
+**Swagstore** is a heavily modified version of the original [Google Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo), specifically adapted for Datadog's experimentation with APM, tracing libraries, and microservices instrumentation. The items featured in the Swagstore are actually Datadog swag items.
+
+## Contributing
+
+If you would like to contribute features or fixes to this app, please see the development guidelines and submit a pull request.
+
+## License
+
+This project is based on Google's Online Boutique demo application.
