@@ -36,7 +36,7 @@
 # ENTRYPOINT locust --host="http://${FRONTEND_ADDR}" --headless -u "${USERS:-10}" 2>&1
 
 # Failing platform spec MANUALLY overridding it
-FROM --platform=$BUILDPLATFORM python:3.9.15-slim as base
+FROM --platform=$BUILDPLATFORM python:3.9.19-slim as base
 
 FROM base as builder
 
@@ -46,7 +46,8 @@ RUN apt-get -qq update \
 
 COPY requirements.txt .
 
-RUN pip install --prefix="/install" -r requirements.txt
+RUN pip install --upgrade setuptools>=75.8.2 && \
+    pip install --prefix="/install" -r requirements.txt
 
 FROM base
 
